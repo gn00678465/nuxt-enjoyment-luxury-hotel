@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES2016",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "declaration": false,
+    "importHelpers": true,
+    "sourceMap": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}
