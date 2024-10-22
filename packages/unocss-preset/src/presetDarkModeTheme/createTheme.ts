@@ -1,6 +1,7 @@
 import type { Theme } from 'unocss/preset-mini'
 import type { CSSEntry } from 'unocss'
-import { mergeDeep } from 'unocss'
+import { mergeDeep } from '@unocss/core'
+import { parseCssColor, colorOpacityToString, colorToString } from '@unocss/rule-utils'
 import { wrapVar } from './helpers'
 
 type UnoCssThemeKeys = 'colors' | 'accentColor' | 'textColor' | 'backgroundColor' | 'borderColor' | 'shadowColor'
@@ -14,8 +15,14 @@ const getTheme = (theme: any, keys: string[]) => {
     theme = theme[key];
     if (theme === undefined) return;
   }
-  return theme;
+  return theme as string;
 };
+
+const convertRGBTheme = (themeValue: string | undefined) => {
+  const cssColor = parseCssColor(themeValue)
+  if (cssColor) return colorToString(cssColor, 1)
+  return themeValue
+}
 
 export function createTheme(theme: { light: ColorsTheme; dark: ColorsTheme }, variablePrefix: string = '') {
   const lightPreflight: CSSEntry[] = []
@@ -30,8 +37,8 @@ export function createTheme(theme: { light: ColorsTheme; dark: ColorsTheme }, va
         const filteredKeys = filterKeys(nextKeys)
         const name = `--${variablePrefix}${filteredKeys.join('-')}`
         const varName = wrapVar(name)
-        lightPreflight.push([`${name}`, `${getTheme(theme.light, nextKeys)}`])
-        darkPreflight.push([`${name}`, `${getTheme(theme.dark, nextKeys)}`])
+        lightPreflight.push([`${name}`, `${convertRGBTheme(getTheme(theme.light, nextKeys))}`])
+        darkPreflight.push([`${name}`, `${convertRGBTheme(getTheme(theme.dark, nextKeys))}`])
         acc[key] = varName
       }
       else {
