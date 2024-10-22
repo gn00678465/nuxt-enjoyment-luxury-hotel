@@ -1,3 +1,8 @@
 {
-  "i18n-ally.localesPaths": []
+  "i18n-ally.localesPaths": [],
+  "cSpell.words": [
+    "Postprocessor",
+    "preflights",
+    "unocss"
+  ]
 }

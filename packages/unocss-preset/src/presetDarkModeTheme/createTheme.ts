@@ -1,4 +1,5 @@
 import type { Theme } from 'unocss/preset-mini'
+import type { CSSEntry } from 'unocss'
 import { mergeDeep } from 'unocss'
 import { wrapVar } from './helpers'
 
@@ -17,8 +18,8 @@ const getTheme = (theme: any, keys: string[]) => {
 };
 
 export function createTheme(theme: { light: ColorsTheme; dark: ColorsTheme }, variablePrefix: string = '') {
-  const lightPreflight: string[] = []
-  const darkPreflight: string[] = []
+  const lightPreflight: CSSEntry[] = []
+  const darkPreflight: CSSEntry[] = []
 
   const recursiveTheme = (curTheme: ColorsTheme, preKeys: string[] = []): ColorsTheme => {
     return Object.keys(curTheme).reduce((acc, key) => {
@@ -29,8 +30,8 @@ export function createTheme(theme: { light: ColorsTheme; dark: ColorsTheme }, va
         const filteredKeys = filterKeys(nextKeys)
         const name = `--${variablePrefix}${filteredKeys.join('-')}`
         const varName = wrapVar(name)
-        lightPreflight.push(`${name}: ${getTheme(theme.light, nextKeys)}`)
-        darkPreflight.push(`${name}: ${getTheme(theme.dark, nextKeys)}`)
+        lightPreflight.push([`${name}`, `${getTheme(theme.light, nextKeys)}`])
+        darkPreflight.push([`${name}`, `${getTheme(theme.dark, nextKeys)}`])
         acc[key] = varName
       }
       else {
