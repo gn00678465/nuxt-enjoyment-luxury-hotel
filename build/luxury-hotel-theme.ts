@@ -2,7 +2,7 @@ export const luxuryHotelTheme = {
   colors: {
     primary: {
       120: '#7B6651',
-      DEFAULT: '#BF9D7D',
+      DEFAULT: 'rgb(191 157 125 / 1)',
       80: '#D0B79F',
       60: '#E1D1C2',
       40: '#F1EAE4',
@@ -16,7 +16,7 @@ export const luxuryHotelTheme = {
     },
     info: {
       120: '#1D66AC',
-      DEFAULT: '#3BADEF',
+      DEFAULT: 'hsl(202 85% 58%)',
       20: '#B1EFFD',
       10: '#E6FBFE'
     },
