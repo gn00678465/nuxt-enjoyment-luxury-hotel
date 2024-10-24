@@ -10,10 +10,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt-enjoyment-luxury-hotel/uno-preset": "workspace:*",
+    "@unocss/reset": "^0.63.6",
     "nuxt": "^3.13.2",
     "vue": "latest",
-    "vue-router": "latest",
-    "@nuxt-enjoyment-luxury-hotel/uno-preset": "workspace:*"
+    "vue-router": "latest"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.6.0",
