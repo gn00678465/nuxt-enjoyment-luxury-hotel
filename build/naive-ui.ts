@@ -30,8 +30,8 @@ export const naiveUiTheme = {
         hover: '#de576d',
         pressed: '#ab1f3f',
         suppl: '#de576d',
-      }
-    }
+      },
+    },
   },
   dark: {
     colors: {
@@ -64,7 +64,7 @@ export const naiveUiTheme = {
         hover: '#e98b8b',
         pressed: '#e57272',
         suppl: 'rgb(208, 58, 82)',
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};

@@ -4,5 +4,12 @@
     "Postprocessor",
     "preflights",
     "unocss"
-  ]
+  ],
+  "eslint.useFlatConfig": true,
+  "eslint.run": "onSave",
+  "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  }
 }

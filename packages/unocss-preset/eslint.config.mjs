@@ -1,5 +1,5 @@
-import antfu from '@antfu/eslint-config'
-import eslintConfigBase from '../../eslint.config.base.mjs'
+import antfu from '@antfu/eslint-config';
+import eslintConfigBase from '../../eslint.config.base.mjs';
 
 export default antfu(
   {
@@ -11,4 +11,4 @@ export default antfu(
     },
   },
   ...eslintConfigBase,
-)
+);

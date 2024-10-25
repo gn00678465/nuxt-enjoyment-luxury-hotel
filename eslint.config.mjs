@@ -1,6 +1,17 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt(
-  // Your custom configs here
-)
+  {
+    ignores: ['**/packages/**', '**/node_modules/', '.git/'],
+  },
+  {
+    rules: {
+      'vue/no-multiple-template-root': 'off',
+    },
+  },
+).override('nuxt/rules', {
+  rules: {
+    '@typescript-eslint/ban-ts-comment': 0,
+  },
+});

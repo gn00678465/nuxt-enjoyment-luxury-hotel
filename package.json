@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt-enjoyment-luxury-hotel/uno-preset": "workspace:*",
@@ -17,12 +19,17 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@commitlint/types": "^19.5.0",
     "@nuxt/eslint": "^0.6.0",
     "@nuxtjs/i18n": "^8.5.5",
     "@nuxtjs/sitemap": "^6.1.2",
     "@pinia/nuxt": "^0.5.5",
     "@unocss/nuxt": "^0.63.6",
     "@vueuse/nuxt": "^11.1.0",
+    "lefthook": "^1.8.1",
+    "typescript": "^5.6.3",
     "unocss": "^0.63.6"
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"

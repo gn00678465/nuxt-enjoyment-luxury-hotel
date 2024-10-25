@@ -1,7 +1,7 @@
-import { defineConfig, presetUno } from 'unocss'
-import { presetDarkModeTheme } from '@nuxt-enjoyment-luxury-hotel/uno-preset'
-import presetWebFonts from 'unocss/preset-web-fonts'
-import { luxuryHotelTheme } from './build/luxury-hotel-theme'
+import { presetDarkModeTheme } from '@nuxt-enjoyment-luxury-hotel/uno-preset';
+import { defineConfig, presetUno } from 'unocss';
+import presetWebFonts from 'unocss/preset-web-fonts';
+import { luxuryHotelTheme } from './build/luxury-hotel-theme';
 
 export default defineConfig({
   presets: [
@@ -15,7 +15,7 @@ export default defineConfig({
     }),
     presetDarkModeTheme({
       theme: luxuryHotelTheme,
-      variablePrefix: 'un-'
+      variablePrefix: 'un-',
     }),
   ],
   preflights: [
@@ -36,9 +36,9 @@ export default defineConfig({
             letter-spacing: 0.05em;
             line-height: 1.2;
           }
-        `
-      }
-    }
+        `;
+      },
+    },
   ],
   rules: [
     [/^m-(\d+)$/, ([, d]) => ({ margin: `${parseInt(d) / 4}rem` })],
@@ -46,18 +46,18 @@ export default defineConfig({
   ],
   theme: {
     fontSize: {
-      tiny: [`${12/16}rem`, { 'font-weight': 500 }],
-      body2: [`${14/16}rem`, { 'font-weight': 500 }],
-      body: [`${16/16}rem`, { 'font-weight': 500 }],
-      subtitle: [`${14/16}rem`, { 'font-weight': 700 }],
-      title: [`${16/16}rem`, { 'font-weight': 700 }],
-      h6: [`${20/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      h5: [`${24/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      h4: [`${28/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      h3: [`${32/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      h2: [`${40/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      h1: [`${48/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-      display: [`${100/16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
-    }
-  }
-})
+      tiny: [`${12 / 16}rem`, { 'font-weight': 500 }],
+      body2: [`${14 / 16}rem`, { 'font-weight': 500 }],
+      body: [`${16 / 16}rem`, { 'font-weight': 500 }],
+      subtitle: [`${14 / 16}rem`, { 'font-weight': 700 }],
+      title: [`${16 / 16}rem`, { 'font-weight': 700 }],
+      h6: [`${20 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      h5: [`${24 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      h4: [`${28 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      h3: [`${32 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      h2: [`${40 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      h1: [`${48 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+      display: [`${100 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
+    },
+  },
+});
