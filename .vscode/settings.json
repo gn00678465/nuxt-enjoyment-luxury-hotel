@@ -1,9 +1,17 @@
 {
   "i18n-ally.localesPaths": [],
   "cSpell.words": [
+    "commitlint",
+    "iconify",
+    "lefthook",
+    "nuxt",
+    "nuxtjs",
+    "pinia",
     "Postprocessor",
     "preflights",
-    "unocss"
+    "unocss",
+    "unplugin",
+    "vueuse"
   ],
   "eslint.useFlatConfig": true,
   "eslint.run": "onSave",

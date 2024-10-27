@@ -23,12 +23,10 @@ export default defineConfig({
       getCSS() {
         return `
           html {
-            fontFamily: "Noto Sans TC", sans-serif, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: "Noto Sans TC", sans-serif, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-weight: 500;
             letter-spacing: 0.02em;
             line-height: 1.5;
-          }
-          :where(:root) {
             font-size: 16px;
           }
           h1,h2,h3,h4,h5,h6 {

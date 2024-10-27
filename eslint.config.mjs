@@ -13,5 +13,6 @@ export default withNuxt(
 ).override('nuxt/rules', {
   rules: {
     '@typescript-eslint/ban-ts-comment': 0,
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
 });
