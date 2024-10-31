@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<BaseInputProps>(), {
   required: false,
-  placeholder: '',
+  placeholder: 'Placeholder',
   status: undefined,
 });
 
-const [value] = defineModel<string | null>('value', { default: null });
+const modelValue = defineModel<string | null>('value', { default: null });
 
 const { themeOverrides, label, status, placeholder, required } = toRefs(props);
 
@@ -56,11 +56,11 @@ type ThemeOverride = {
       <span
         v-if="required"
         class="flex-shrink-0 ml-auto text-primary"
-      >必填</span>
+      >{{ $t('required') }}</span>
     </div>
     <div class="mt-2">
       <input
-        v-model="value"
+        v-model="modelValue"
         type="text"
         :placeholder="placeholder"
         name="inputname"

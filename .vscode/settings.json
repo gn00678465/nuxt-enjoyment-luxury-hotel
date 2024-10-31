@@ -18,6 +18,10 @@
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "never",
+  },
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "vue": "html"
   }
 }

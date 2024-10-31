@@ -1,12 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'client',
+  layout: 'auth-layout',
 });
 </script>
 
 <template>
-  <div>
-    index
+  <div class="flex-1 text-white">
+    SIGN UP
   </div>
 </template>
 

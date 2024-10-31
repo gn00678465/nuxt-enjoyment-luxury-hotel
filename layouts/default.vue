@@ -1,15 +1,9 @@
 <script setup lang="ts">
-defineOptions({
-  name: 'BaseDropdown',
-});
-</script>
-
-<script lang="ts">
 
 </script>
 
 <template>
-  <div />
+  <slot />
 </template>
 
 <style scoped>

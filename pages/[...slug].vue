@@ -1,12 +1,9 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'client',
-});
 </script>
 
 <template>
   <div>
-    index
+    404
   </div>
 </template>
 

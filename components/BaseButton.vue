@@ -16,13 +16,12 @@ const props = withDefaults(defineProps<BaseButtonProps>(), {
   ghost: false,
   text: false,
   disabled: false,
-  themeOverride: undefined,
+  themeOverrides: undefined,
   renderIcon: undefined,
   block: false,
 });
 
 const { type, ghost, text, themeOverrides, renderIcon, block } = toRefs(props);
-
 const icon = computed(() => {
   if (text.value) return null;
   return 'icon' in slots && typeof slots.icon === 'function' ? slots.icon()?.[0] : renderIcon.value ? renderIcon.value() : null;
@@ -32,8 +31,10 @@ const styles = computed(() => {
   const _themeOverride: ThemeOverride = Object.assign({
     padding: '16px 32px',
     borderRadius: '8px',
-  }, themeOverrides.value?.padding || {});
+  }, themeOverrides.value || {});
+
   const _padding = convertPaddingToCSSVars(_themeOverride.padding);
+
   return {
     ..._padding,
     '--border-radius': _themeOverride.borderRadius,

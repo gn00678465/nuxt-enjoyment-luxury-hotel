@@ -1,5 +1,5 @@
 import { presetDarkModeTheme } from '@nuxt-enjoyment-luxury-hotel/uno-preset';
-import { defineConfig, presetUno } from 'unocss';
+import { defineConfig, presetUno, transformerVariantGroup } from 'unocss';
 import presetWebFonts from 'unocss/preset-web-fonts';
 import { luxuryHotelTheme } from './build/luxury-hotel-theme';
 
@@ -9,7 +9,7 @@ export default defineConfig({
     presetWebFonts({
       provider: 'google',
       fonts: {
-        sans: 'Noto Sans TC',
+        sans: 'Noto Serif TC',
         mono: ['Fira Code', 'Fira Mono:400,700'],
       },
     }),
@@ -22,8 +22,14 @@ export default defineConfig({
     {
       getCSS() {
         return `
+          html,
+          body,
+          #__nuxt {
+            height: 100%;
+          }
+
           html {
-            font-family: "Noto Sans TC", sans-serif, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: "Noto Serif TC", sans-serif, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-weight: 500;
             letter-spacing: 0.02em;
             line-height: 1.5;
@@ -43,6 +49,7 @@ export default defineConfig({
     [/^p-(\d+)$/, match => ({ padding: `${parseInt(match[1]) / 4}rem` })],
   ],
   theme: {
+    breakpoints: { 0: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1296px' },
     fontSize: {
       tiny: [`${12 / 16}rem`, { 'font-weight': 500 }],
       body2: [`${14 / 16}rem`, { 'font-weight': 500 }],
@@ -58,4 +65,7 @@ export default defineConfig({
       display: [`${100 / 16}rem`, { 'font-weight': 700, 'letter-spacing': '0.05em', 'line-height': 1.2 }],
     },
   },
+  transformers: [
+    transformerVariantGroup(),
+  ],
 });

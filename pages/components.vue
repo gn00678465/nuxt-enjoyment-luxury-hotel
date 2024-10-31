@@ -1,6 +1,16 @@
 <script setup lang="ts">
+import type { LuxuryDropdownOption } from '../components/LuxuryDropdown.vue';
 import IconLogo from '~icons/custom/logo';
 import MdiAdd from '~icons/mdi/add';
+
+const dropdownOptions: LuxuryDropdownOption[] = [
+  { id: 1, label: '111111', value: 1 },
+  { id: 1, label: '222222', value: 2 },
+];
+
+const inputValue = ref('');
+
+const dropdownValue = ref<number | string | undefined>(undefined);
 </script>
 
 <template>
@@ -17,12 +27,12 @@ import MdiAdd from '~icons/mdi/add';
             <MdiAdd />
           </template>
         </BaseButton>
-        <BaseButton
+        <!-- <BaseButton
           type="secondary"
           :render-icon="() => h(MdiAdd)"
         >
           Secondary Button
-        </BaseButton>
+        </BaseButton> -->
         <BaseButton ghost>
           Ghost Button
         </BaseButton>
@@ -51,15 +61,28 @@ import MdiAdd from '~icons/mdi/add';
       <dt>Input: BaseInput</dt>
       <dd class="flex items-center gap-x-3">
         <BaseInput
+          v-model:value="inputValue"
           class="w-72"
           label="Text"
           required
           placeholder="placeholder"
         />
         <BaseInput
+          v-model:value="inputValue"
           class="w-72"
           label="Err"
           status="error"
+        />
+      </dd>
+
+      <dt>Dropdown</dt>
+      <dd>
+        <LuxuryDropdown
+          :value="dropdownValue"
+          :options="dropdownOptions"
+          @update:value="(v) => {
+            dropdownValue = v
+          }"
         />
       </dd>
     </dl>

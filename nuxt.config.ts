@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         },
       },
     }],
+    '@nuxt/image',
   ],
 
   components: [
@@ -30,6 +31,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: ['@unocss/reset/tailwind.css'],
+
   compatibilityDate: '2024-04-03',
 
   eslint: {
@@ -40,10 +42,22 @@ export default defineNuxtConfig({
     },
   },
 
+  i18n: {
+    langDir: 'locales',
+    locales: [
+      { code: 'zh-tw', iso: 'zh-TW', file: 'zh-tw.json' },
+    ],
+    defaultLocale: 'zh-tw',
+  },
+
   icon: {
     provider: 'iconify',
     serverBundle: {
       externalizeIconsJson: true,
     },
+  },
+
+  image: {
+    dir: 'assets/images',
   },
 });
