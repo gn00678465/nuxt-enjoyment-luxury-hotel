@@ -76,10 +76,18 @@ const dropdownValue = ref<number | string | undefined>(undefined);
       </dd>
 
       <dt>Dropdown</dt>
-      <dd>
+      <dd class="flex items-center gap-x-4">
         <LuxuryDropdown
           :value="dropdownValue"
           :options="dropdownOptions"
+          @update:value="(v) => {
+            dropdownValue = v
+          }"
+        />
+        <LuxuryDropdown
+          :value="dropdownValue"
+          :options="dropdownOptions"
+          closeable
           @update:value="(v) => {
             dropdownValue = v
           }"

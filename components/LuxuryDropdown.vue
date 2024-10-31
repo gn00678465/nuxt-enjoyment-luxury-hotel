@@ -8,6 +8,7 @@ import {
 } from '@headlessui/vue';
 import IcRoundKeyboardArrowDown from '~icons/ic/round-keyboard-arrow-down';
 import FluentDrawerDismiss24Regular from '~icons/fluent/drawer-dismiss-24-regular';
+import MdiCloseCircle from '~icons/mdi/close-circle';
 
 defineOptions({
   name: 'LuxuryDropdown',
@@ -50,6 +51,11 @@ const selectedOptions = computed({
     }
   },
 });
+
+function onClear(e: MouseEvent) {
+  e.stopPropagation();
+  modelValue.value = undefined;
+}
 </script>
 
 <script lang="ts">
@@ -91,7 +97,7 @@ type ThemeOverride = {
     }"
   >
     <ListboxButton
-      class="w-full inline-flex items-center justify-between luxury-dropdown border  text-body placeholder:text-neutral-80 bg-white"
+      class="w-full inline-flex items-center justify-between luxury-dropdown border  text-body placeholder:text-neutral-80 bg-white group"
       :class="{
         'border-primary active:border-primary': open,
         'border-transparent text-neutral-80 text-neutral-100': !open && !modelValue,
@@ -103,7 +109,17 @@ type ThemeOverride = {
         width="24"
         height="24"
         class="transition duration-100"
-        :class="[open && 'rotate-180']"
+        :class="{
+          'rotate-180': open,
+          'group-hover:hidden': !!modelValue && closeable,
+        }"
+      />
+      <MdiCloseCircle
+        class="hidden text-neutral-60"
+        :class="{
+          'group-hover:inline-block': !!modelValue && closeable,
+        }"
+        @click.stop="onClear"
       />
     </ListboxButton>
 
