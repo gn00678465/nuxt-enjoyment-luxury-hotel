@@ -11,6 +11,8 @@ const dropdownOptions: LuxuryDropdownOption[] = [
 const inputValue = ref('');
 
 const dropdownValue = ref<number | string | undefined>(undefined);
+
+const tabValue = ref('item3');
 </script>
 
 <template>
@@ -21,24 +23,24 @@ const dropdownValue = ref<number | string | undefined>(undefined);
 
       <dt>Button: BaseButton</dt>
       <dd class="flex items-center gap-x-3">
-        <BaseButton>
+        <LuxuryButton>
           Primary Button
           <template #icon>
             <MdiAdd />
           </template>
-        </BaseButton>
+        </LuxuryButton>
         <!-- <BaseButton
           type="secondary"
           :render-icon="() => h(MdiAdd)"
         >
           Secondary Button
         </BaseButton> -->
-        <BaseButton ghost>
+        <LuxuryButton ghost>
           Ghost Button
-        </BaseButton>
-        <BaseButton text>
+        </LuxuryButton>
+        <LuxuryButton text>
           Text Button
-        </BaseButton>
+        </LuxuryButton>
       </dd>
 
       <dt>Logo SVG</dt>
@@ -92,6 +94,20 @@ const dropdownValue = ref<number | string | undefined>(undefined);
             dropdownValue = v
           }"
         />
+      </dd>
+
+      <dt>Hero button</dt>
+      <dd>
+        <LuxuryHeroButton>立即訂房</LuxuryHeroButton>
+      </dd>
+
+      <dt>Session tabs</dt>
+      <dd>
+        <LuxurySessionTabs v-model:value="tabValue">
+          <LuxurySessionTab name="item1" />
+          <LuxurySessionTab name="item2" />
+          <LuxurySessionTab name="item3" />
+        </LuxurySessionTabs>
       </dd>
     </dl>
   </div>

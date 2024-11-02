@@ -11,7 +11,7 @@ const emits = defineEmits<{
   click: [e: MouseEvent];
 }>();
 
-const props = withDefaults(defineProps<BaseButtonProps>(), {
+const props = withDefaults(defineProps<LuxuryButtonProps>(), {
   type: 'primary',
   ghost: false,
   text: false,
@@ -42,7 +42,7 @@ const styles = computed(() => {
 });
 
 function setClassName(): string[] {
-  if (text.value) return ['text-primary', 'hover:text-primary-120', 'base-button__text', 'after:bg-primary', 'hover:after:bg-primary-120'];
+  if (text.value) return ['text-primary', 'hover:text-primary-120', 'luxury-button__text', 'after:bg-primary', 'hover:after:bg-primary-120'];
   if (ghost.value) return ['text-white', 'hover:text-primary'];
   if (type.value === 'primary') return ['bg-primary', 'hover:bg-primary-120', 'text-white', 'border', 'border-primary', 'hover:border-primary-120'];
   if (type.value === 'secondary') return ['bg-white border', 'border-primary', 'hover:border-primary-120', 'hover:bg-primary-tint', 'text-primary', 'hover:text-primary-120'];
@@ -53,7 +53,7 @@ const className = computed(setClassName);
 </script>
 
 <script lang="ts">
-export interface BaseButtonProps {
+export interface LuxuryButtonProps {
   type?: 'primary' | 'secondary';
   ghost?: boolean;
   text?: boolean;
@@ -71,7 +71,7 @@ type ThemeOverride = {
 
 <template>
   <button
-    class="text-title base-button transition-colors duration-300 flex items-center justify-center"
+    class="text-title luxury-button transition-colors duration-300 flex items-center justify-center"
     :class="[...className, block && 'w-full']"
     :style="styles"
     @click="(e) => emits('click', e)"
@@ -88,12 +88,7 @@ type ThemeOverride = {
 </template>
 
 <style scoped>
-.base-button {
-  padding: var(--padding-top) var(--padding-left) var(--padding-bottom) var(--padding-left);
-  border-radius: var(--border-radius);
-}
-
-.base-button__text {
+.luxury-button__text {
   position: relative;
 
   &::after {

@@ -1,5 +1,5 @@
 import { presetDarkModeTheme } from '@nuxt-enjoyment-luxury-hotel/uno-preset';
-import { defineConfig, presetUno, transformerVariantGroup } from 'unocss';
+import { defineConfig, presetUno, transformerVariantGroup, transformerCompileClass } from 'unocss';
 import presetWebFonts from 'unocss/preset-web-fonts';
 import { luxuryHotelTheme } from './build/luxury-hotel-theme';
 
@@ -30,10 +30,12 @@ export default defineConfig({
 
           html {
             font-family: "Noto Serif TC", sans-serif, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 16px;
+          }
+          * {
             font-weight: 500;
             letter-spacing: 0.02em;
             line-height: 1.5;
-            font-size: 16px;
           }
           h1,h2,h3,h4,h5,h6 {
             font-weight: 700;
@@ -47,6 +49,12 @@ export default defineConfig({
   rules: [
     [/^m-(\d+)$/, ([, d]) => ({ margin: `${parseInt(d) / 4}rem` })],
     [/^p-(\d+)$/, match => ({ padding: `${parseInt(match[1]) / 4}rem` })],
+    [/^luxury-button$/, ([,]) => {
+      return {
+        'padding': 'var(--padding-top) var(--padding-left) var(--padding-bottom) var(--padding-left)',
+        'border-radius': 'var(--border-radius)',
+      };
+    }],
   ],
   theme: {
     breakpoints: { 0: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1296px' },
@@ -67,5 +75,6 @@ export default defineConfig({
   },
   transformers: [
     transformerVariantGroup(),
+    transformerCompileClass(),
   ],
 });
