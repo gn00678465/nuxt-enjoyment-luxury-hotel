@@ -68,8 +68,8 @@ const basicInfos = [
         </li>
       </ul>
       <ul class="mt-20 text-body2 space-y-4 md:(text-body space-y-0 flex items-center justify-between w-full)">
-        <li>{{ $t('address') }}</li>
-        <li>{{ $t('copyright') }}</li>
+        <li>{{ $t('footer.address') }}</li>
+        <li>{{ $t('footer.copyright') }}</li>
       </ul>
     </div>
   </footer>

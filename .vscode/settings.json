@@ -1,5 +1,5 @@
 {
-  "i18n-ally.localesPaths": [],
+  "i18n-ally.localesPaths": ["locales"],
   "cSpell.words": [
     "commitlint",
     "iconify",
@@ -23,5 +23,7 @@
   "emmet.includeLanguages": {
     "vue-html": "html",
     "vue": "html"
-  }
+  },
+  "i18n-ally.displayLanguage": "zh-TW",
+  "i18n-ally.keystyle": "flat"
 }

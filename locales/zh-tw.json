@@ -1,6 +1,14 @@
 {
-  "address": "806023 台灣高雄市新興區六角路123號",
-  "copyright": "© 享樂酒店 2023 All Rights Reserved.",
+  "title": "享樂酒店",
+  "subtitle": "Enjoyment Luxury Hotel",
+  "footer.address": "806023 台灣高雄市新興區六角路123號",
+  "footer.copyright": "© 享樂酒店 2023 All Rights Reserved.",
   "required": "必填",
-  "pls_select": "請選擇"
+  "pls_select": "請選擇",
+  "sign_in" : "會員登入",
+  "book_now" : "立即訂房",
+  "hotel_room" : "客房旅宿",
+  "email": "電子信箱",
+  "password": "密碼",
+  "welcome_message": "享樂酒店，誠摯歡迎"
 }

@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -13,9 +13,7 @@ export default defineNuxtConfig({
       compiler: 'vue3',
       autoInstall: true,
       customCollections: {
-        custom: {
-          logo: () => fs.readFile('./assets/svgs/logo.svg', 'utf-8'),
-        },
+        custom: FileSystemIconLoader('./assets/svgs'),
       },
     }],
     '@nuxt/image',
@@ -45,9 +43,10 @@ export default defineNuxtConfig({
   i18n: {
     langDir: 'locales',
     locales: [
-      { code: 'zh-tw', iso: 'zh-TW', file: 'zh-tw.json' },
+      { code: 'zh-TW', file: 'zh-TW.json' },
     ],
-    defaultLocale: 'zh-tw',
+    defaultLocale: 'zh-TW',
+    strategy: 'prefix_and_default',
   },
 
   icon: {

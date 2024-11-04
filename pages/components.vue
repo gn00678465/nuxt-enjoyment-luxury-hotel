@@ -19,7 +19,10 @@ const tabValue = ref('item3');
   <div class="p-10 bg-neutral-10 h-full">
     <dl>
       <dt>Checkbox: BaseCheckBox</dt>
-      <dd><BaseCheckbox /></dd>
+      <dd class="flex items-center gap-x-3">
+        <BaseCheckbox />
+        <BaseCheckbox>label</BaseCheckbox>
+      </dd>
 
       <dt>Button: BaseButton</dt>
       <dd class="flex items-center gap-x-3">
@@ -62,14 +65,14 @@ const tabValue = ref('item3');
 
       <dt>Input: BaseInput</dt>
       <dd class="flex items-center gap-x-3">
-        <BaseInput
+        <LuxuryInput
           v-model:value="inputValue"
           class="w-72"
           label="Text"
           required
           placeholder="placeholder"
         />
-        <BaseInput
+        <LuxuryInput
           v-model:value="inputValue"
           class="w-72"
           label="Err"
@@ -103,11 +106,11 @@ const tabValue = ref('item3');
 
       <dt>Session tabs</dt>
       <dd>
-        <LuxurySessionTabs v-model:value="tabValue">
+        <LuxurySessionTabsList v-model:value="tabValue">
           <LuxurySessionTab name="item1" />
           <LuxurySessionTab name="item2" />
           <LuxurySessionTab name="item3" />
-        </LuxurySessionTabs>
+        </LuxurySessionTabsList>
       </dd>
     </dl>
   </div>

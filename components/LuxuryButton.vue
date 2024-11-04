@@ -38,14 +38,15 @@ const styles = computed(() => {
   return {
     ..._padding,
     '--border-radius': _themeOverride.borderRadius,
+    '--border-width': '1px',
   };
 });
 
 function setClassName(): string[] {
-  if (text.value) return ['text-primary', 'hover:text-primary-120', 'luxury-button__text', 'after:bg-primary', 'hover:after:bg-primary-120'];
+  if (text.value) return ['text-primary', 'hover:text-primary-120', 'luxury-button--text', 'after:bg-primary', 'hover:after:bg-primary-120'];
   if (ghost.value) return ['text-white', 'hover:text-primary'];
   if (type.value === 'primary') return ['bg-primary', 'hover:bg-primary-120', 'text-white', 'border', 'border-primary', 'hover:border-primary-120'];
-  if (type.value === 'secondary') return ['bg-white border', 'border-primary', 'hover:border-primary-120', 'hover:bg-primary-tint', 'text-primary', 'hover:text-primary-120'];
+  if (type.value === 'secondary') return ['bg-white', 'border', 'border-primary', 'hover:border-primary-120', 'hover:bg-primary-tint', 'text-primary', 'hover:text-primary-120'];
   return [];
 }
 
@@ -88,7 +89,7 @@ type ThemeOverride = {
 </template>
 
 <style scoped>
-.luxury-button__text {
+.luxury-button--text {
   position: relative;
 
   &::after {

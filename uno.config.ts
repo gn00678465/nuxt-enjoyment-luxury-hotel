@@ -49,9 +49,11 @@ export default defineConfig({
   rules: [
     [/^m-(\d+)$/, ([, d]) => ({ margin: `${parseInt(d) / 4}rem` })],
     [/^p-(\d+)$/, match => ({ padding: `${parseInt(match[1]) / 4}rem` })],
-    [/^luxury-button$/, ([,]) => {
+    [/^luxury-(button|input)$/, ([,]) => {
+      const wrap = (str: string) => `calc(var(${str}) - var(--border-width, 0px))`;
+      const varArr = ['--padding-top', '--padding-left', '--padding-bottom', '--padding-left'];
       return {
-        'padding': 'var(--padding-top) var(--padding-left) var(--padding-bottom) var(--padding-left)',
+        'padding': varArr.map(wrap).join(' '),
         'border-radius': 'var(--border-radius)',
       };
     }],

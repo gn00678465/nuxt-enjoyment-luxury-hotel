@@ -24,7 +24,7 @@ export interface BaseCheckboxProps {
 
 <template>
   <label
-    class="warper relative cursor-pointer inline-block"
+    class="relative cursor-pointer inline-block rounded-lg flex items-center gap-x-2"
     :style="styles"
   >
     <input
@@ -33,14 +33,18 @@ export interface BaseCheckboxProps {
       class="absolute opacity-0"
     >
     <div
-      class="checkmark ring ring-transparent hover:ring-primary-40 ring-offset-1 rounded-md flex items-center justify-center inline-block"
-      :class="[value && 'bg-primary-120']"
+      class="checkmark ring ring-transparent hover:ring-primary-40 ring-offset-1 flex items-center justify-center inline-block rounded-lg overflow-hidden"
+      :class="{
+        'bg-primary-120': !!value,
+        'bg-white': !value,
+      }"
     >
       <MdiCheck
         v-if="value"
         class="text-white"
       />
     </div>
+    <slot class="text-subtitle md:text-title" />
   </label>
 </template>
 

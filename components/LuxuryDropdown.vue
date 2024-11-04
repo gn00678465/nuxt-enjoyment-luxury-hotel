@@ -90,17 +90,16 @@ type ThemeOverride = {
     as="div"
     :style="styles"
     name="LuxuryDropdown"
-    class="min-w-70"
     :class="{
       'inline-block w-auto': !block,
       'block w-full': block,
     }"
   >
     <ListboxButton
-      class="w-full inline-flex items-center justify-between luxury-dropdown border  text-body placeholder:text-neutral-80 bg-white group"
+      class="w-full inline-flex items-center justify-between luxury-dropdown border text-body2 md:text-body text-neutral-80 placeholder:text-neutral-80 bg-white group"
       :class="{
-        'border-primary active:border-primary': open,
-        'border-transparent text-neutral-80 text-neutral-100': !open && !modelValue,
+        'border-primary active:border-primary text-neutral-100': open,
+        'border-transparent text-neutral-100': !open && !modelValue,
         'border-neutral-80 text-neutral-100': !!modelValue && !open,
       }"
     >
@@ -131,7 +130,7 @@ type ThemeOverride = {
       >
         <ListboxOptions class="w-full bg-white mt-1 absolute top-0 left-0 right-0 py-3 rounded-5">
           <template v-if="!options.length">
-            <div class="flex flex-col gap-y-1 items-center justify-center text-neutral-60/50">
+            <div class="flex flex-col gap-y-1 items-center justify-center text-neutral-60/50 text-body2 md:text-body">
               <FluentDrawerDismiss24Regular
                 width="64"
                 height="64"

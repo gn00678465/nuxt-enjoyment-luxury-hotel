@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { createReusableTemplate } from '@vueuse/core';
 import { useBoolean } from '../composables/common';
 import IconLogo from '~icons/custom/logo';
 import IcRoundClose from '~icons/ic/round-close';
@@ -7,11 +6,11 @@ import IcRoundMenu from '~icons/ic/round-menu';
 
 const props = withDefaults(defineProps<AppNavProps>(), {
   inverted: false,
+  showActions: true,
 });
 
-const { inverted } = toRefs(props);
-
-const [DefineMenuTemplate, ReuseMenuTemplate] = createReusableTemplate<{ className?: string }>();
+const { inverted, showActions } = toRefs(props);
+const { t } = useI18n();
 
 const { bool: mobileCollapse, setFalse, setTrue } = useBoolean(false);
 </script>
@@ -19,7 +18,19 @@ const { bool: mobileCollapse, setFalse, setTrue } = useBoolean(false);
 <script lang="ts">
 export interface AppNavProps {
   inverted?: boolean;
+  showActions?: boolean;
 }
+
+export const appNavProps = {
+  inverted: {
+    type: Boolean,
+    default: false,
+  },
+  showActions: {
+    type: Boolean,
+    default: true,
+  },
+};
 </script>
 
 <template>
@@ -27,38 +38,6 @@ export interface AppNavProps {
     class="app-nav px-3 text-white"
     :class="inverted ? 'bg-body' : 'bg-transparent'"
   >
-    <DefineMenuTemplate v-slot="{ className }">
-      <ul
-        :class="className"
-      >
-        <li class="w-full md:w-auto">
-          <BaseButton
-            ghost
-            :theme-overrides="{ padding: '16px' }"
-            class="w-full md:w-auto"
-          >
-            客房旅宿
-          </BaseButton>
-        </li>
-        <li class="w-full md:w-auto">
-          <BaseButton
-            ghost
-            :theme-overrides="{ padding: '16px' }"
-            class="w-full md:w-auto"
-          >
-            會員登入
-          </BaseButton>
-        </li>
-        <li class="w-full md:w-auto">
-          <BaseButton
-            type="primary"
-            class="w-full md:w-auto"
-          >
-            立即訂房
-          </BaseButton>
-        </li>
-      </ul>
-    </DefineMenuTemplate>
     <!-- desktop rwd -->
     <div class="max-w-440 mx-auto flex items-center justify-between">
       <IconLogo
@@ -73,36 +52,98 @@ export interface AppNavProps {
           height="24"
         />
       </button>
-      <ReuseMenuTemplate class-name="hidden md:(flex items-center gap-x-4)" />
+      <ul
+        class="hidden md:(flex items-center gap-x-4)"
+      >
+        <li class="w-full md:w-auto">
+          <LuxuryButton
+            ghost
+            :theme-overrides="{ padding: '16px' }"
+            class="w-full md:w-auto"
+          >
+            {{ t('hotel_room') }}
+          </LuxuryButton>
+        </li>
+        <li class="w-full md:w-auto">
+          <LuxuryButton
+            ghost
+            :theme-overrides="{ padding: '16px' }"
+            class="w-full md:w-auto"
+          >
+            {{ t('sign_in') }}
+          </LuxuryButton>
+        </li>
+        <li class="w-full md:w-auto">
+          <LuxuryButton
+            type="primary"
+            class="w-full md:w-auto"
+          >
+            {{ t('book_now') }}
+          </LuxuryButton>
+        </li>
+      </ul>
 
       <!-- Mobile menu, show/hide based on menu state. -->
-      <transition
-        mode="out-in"
-        enter-from-class="transform opacity-0"
-        enter-to-class="transform opacity-100"
-        enter-active-class="transition ease-out duration-100"
-        leave-active-class="transition ease-in duration-75"
-        leave-from-class="transform opacity-100"
-        leave-to-class="transform opacity-0"
+      <Teleport
+        to="body"
       >
-        <div
-          v-if="mobileCollapse"
-          class="fixed top-0 left-0 bottom-0 right-0 bg-body z-50  md:hidden"
+        <transition
+          mode="out-in"
+          enter-from-class="transform opacity-0"
+          enter-to-class="transform opacity-100"
+          enter-active-class="transition ease-out duration-100"
+          leave-active-class="transition ease-in duration-75"
+          leave-from-class="transform opacity-100"
+          leave-to-class="transform opacity-0"
         >
-          <div class="w-full h-full flex items-center justify-center relative">
-            <button
-              class="absolute top-3 right-3 p-2.5"
-              @click="setFalse"
-            >
-              <IcRoundClose
-                width="28"
-                height="28"
-              />
-            </button>
-            <ReuseMenuTemplate class-name="w-full px-5 space-y-4 md:hidden" />
+          <div
+            v-if="mobileCollapse && showActions"
+            class="fixed top-0 left-0 bottom-0 right-0 bg-body md:hidden z-[998] w-full h-full"
+          >
+            <div class="h-full flex items-center justify-center relative">
+              <button
+                class="absolute top-3 right-3 p-2.5 text-white"
+                @click="setFalse"
+              >
+                <IcRoundClose
+                  width="28"
+                  height="28"
+                />
+              </button>
+              <ul
+                class="w-full px-5 space-y-4 block md:hidden"
+              >
+                <li class="w-full md:w-auto">
+                  <LuxuryButton
+                    ghost
+                    :theme-overrides="{ padding: '16px' }"
+                    class="w-full md:w-auto"
+                  >
+                    {{ t('hotel_room') }}
+                  </LuxuryButton>
+                </li>
+                <li class="w-full md:w-auto">
+                  <LuxuryButton
+                    ghost
+                    :theme-overrides="{ padding: '16px' }"
+                    class="w-full md:w-auto"
+                  >
+                    {{ t('sign_in') }}
+                  </LuxuryButton>
+                </li>
+                <li class="w-full md:w-auto">
+                  <LuxuryButton
+                    type="primary"
+                    class="w-full md:w-auto"
+                  >
+                    {{ t('book_now') }}
+                  </LuxuryButton>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </transition>
+        </transition>
+      </Teleport>
     </div>
   </nav>
 </template>
