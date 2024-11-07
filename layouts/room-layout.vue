@@ -9,13 +9,13 @@ const sources: Array<LuxuryCarouselSourceAttributes> = [{
 
 <template>
   <div class="w-full h-full flex flex-col relative">
-    <header class="flex-shrink-0 relative">
+    <header class="flex-shrink-0">
       <AppNav
         :inverted="false"
         class="fixed top-0 left-0 w-full h-auto z-10"
       />
       <LuxuryCarousel
-        slide-class="aspect-[375/812] sm:aspect-[1920/1080]"
+        slide-class="aspect-[375/466] md:aspect-[1920/800]"
         image-class="h-full object-cover"
       >
         <LuxuryCarouselImage
@@ -26,7 +26,7 @@ const sources: Array<LuxuryCarouselSourceAttributes> = [{
         />
       </LuxuryCarousel>
     </header>
-    <main class="flex-grow">
+    <main class="flex-grow bg-primary-40">
       <slot />
     </main>
     <AppFooter class="flex-shrink-0" />

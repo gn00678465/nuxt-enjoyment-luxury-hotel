@@ -35,7 +35,7 @@ export const appNavProps = {
 
 <template>
   <nav
-    class="app-nav px-3 text-white"
+    class=":uno: app-nav px-3 text-white"
     :class="inverted ? 'bg-body' : 'bg-transparent'"
   >
     <!-- desktop rwd -->

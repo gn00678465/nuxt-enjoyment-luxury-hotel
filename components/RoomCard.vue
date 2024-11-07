@@ -1,12 +1,11 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'client-layout',
-});
+
 </script>
 
 <template>
-  <div>
-    index
+  <div class="rounded-10 bg-white flex flex-col">
+    <div>Head</div>
+    <div>Content</div>
   </div>
 </template>
 
