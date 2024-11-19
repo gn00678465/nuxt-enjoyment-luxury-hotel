@@ -49,36 +49,39 @@ export default LuxuryCarousel;
 </script>
 
 <template>
-  <swiper
-    v-bind="attrs"
-    class="relative"
-    :modules="modules"
-    :slides-per-view="1"
-    :pagination="true"
-    :autoplay="{
-      delay: 3000,
-      disableOnInteraction: false,
-    }"
-  >
-    <div
-      v-if="showMask"
-      class="absolute top-0 bottom-0 right-0 left-0 bg-black/60 z-1 select-none"
-    />
-    <template
-      v-for="(image, idx) of images"
-      :key="idx"
+  <ClientOnly>
+    <swiper
+      ref="containerRef"
+      v-bind="attrs"
+      class="relative"
+      :modules="modules"
+      :slides-per-view="1"
+      :pagination="true"
+      :autoplay="{
+        delay: 3000,
+        disableOnInteraction: false,
+      }"
     >
-      <swiper-slide
-        class="w-full object-cover"
-        :class="slideClass"
+      <div
+        v-if="showMask"
+        class="absolute top-0 bottom-0 right-0 left-0 bg-black/60 z-1 select-none"
+      />
+      <template
+        v-for="(image, idx) of images"
+        :key="idx"
       >
-        <component
-          :is="image"
-          :class="imageClass"
-        />
-      </swiper-slide>
-    </template>
-  </swiper>
+        <swiper-slide
+          class="w-full object-cover"
+          :class="slideClass"
+        >
+          <component
+            :is="image"
+            :class="imageClass"
+          />
+        </swiper-slide>
+      </template>
+    </swiper>
+  </ClientOnly>
 </template>
 
 <style scoped>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+defineSlots<{
+  label: () => any;
+  default: () => any;
+}>();
+
 const props = withDefaults(defineProps<LuxuryInputProps>(), {
   required: false,
   placeholder: 'Placeholder',
@@ -21,6 +26,7 @@ const styles = computed(() => {
     ..._padding,
     '--border-radius': _themeOverride.borderRadius,
     '--border-width': '1px',
+    '--color': 'var(--un-colors-neutral-0)',
   };
 });
 
@@ -60,8 +66,12 @@ type ThemeOverride = {
     >
       <label
         for="inputname"
-        class="flex-grow text-white"
-      >{{ label }}</label>
+        class="flex-grow"
+      >
+        <slot name="label">
+          <span class="text-white">{{ label }}</span>
+        </slot>
+      </label>
       <span
         v-if="required"
         class="flex-shrink-0 ml-auto text-primary"

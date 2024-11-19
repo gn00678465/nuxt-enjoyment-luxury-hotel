@@ -31,6 +31,11 @@ export const appNavProps = {
     default: true,
   },
 };
+
+export interface AppNavProps {
+  inverted?: boolean;
+  showActions?: boolean;
+}
 </script>
 
 <template>
@@ -102,7 +107,7 @@ export const appNavProps = {
           >
             <div class="h-full flex items-center justify-center relative">
               <button
-                class="absolute top-3 right-3 p-2.5 text-white"
+                class="absolute top-5 right-5 p-2.5 text-white"
                 @click="setFalse"
               >
                 <IcRoundClose

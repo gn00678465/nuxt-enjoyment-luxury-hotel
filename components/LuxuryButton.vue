@@ -19,9 +19,10 @@ const props = withDefaults(defineProps<LuxuryButtonProps>(), {
   themeOverrides: undefined,
   renderIcon: undefined,
   block: false,
+  attrType: 'button',
 });
 
-const { type, ghost, text, themeOverrides, renderIcon, block } = toRefs(props);
+const { type, ghost, text, disabled, themeOverrides, renderIcon, block, attrType, form } = toRefs(props);
 const icon = computed(() => {
   if (text.value) return null;
   return 'icon' in slots && typeof slots.icon === 'function' ? slots.icon()?.[0] : renderIcon.value ? renderIcon.value() : null;
@@ -43,6 +44,7 @@ const styles = computed(() => {
 });
 
 function setClassName(): string[] {
+  if (disabled.value) return ['bg-neutral-40', 'text-neutral-60', 'cursor-not-allowed'];
   if (text.value) return ['text-primary', 'hover:text-primary-120', 'luxury-button--text', 'after:bg-primary', 'hover:after:bg-primary-120'];
   if (ghost.value) return ['text-white', 'hover:text-primary'];
   if (type.value === 'primary') return ['bg-primary', 'hover:bg-primary-120', 'text-white', 'border', 'border-primary', 'hover:border-primary-120'];
@@ -62,6 +64,8 @@ export interface LuxuryButtonProps {
   themeOverrides?: Partial<ThemeOverride>;
   renderIcon?: () => VNodeChild;
   block?: boolean;
+  attrType?: 'button' | 'submit' | 'reset';
+  form?: string;
 }
 
 type ThemeOverride = {
@@ -75,7 +79,9 @@ type ThemeOverride = {
     class="text-title luxury-button transition-colors duration-300 flex items-center justify-center"
     :class="[...className, block && 'w-full']"
     :style="styles"
-    @click="(e) => emits('click', e)"
+    :type="attrType"
+    :form="form"
+    @click="(e) => !disabled && emits('click', e)"
   >
     <slot />
     <component

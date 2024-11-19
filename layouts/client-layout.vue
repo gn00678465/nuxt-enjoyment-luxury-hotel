@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import type { LuxuryCarouselSourceAttributes } from '../components/carousel';
-
-const sources: Array<LuxuryCarouselSourceAttributes> = [{
-  media: '(min-width:640px)',
-  srcset: '/home-hero.png',
-}];
+const route = useRoute();
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col relative">
-    <header class="flex-shrink-0 relative">
+  <div class="w-full h-inherit flex flex-col relative">
+    <header
+      class="flex-shrink-0 relative"
+      :class="route.meta.headerClass"
+    >
       <AppNav
-        :inverted="false"
-        class="fixed top-0 left-0 w-full h-auto z-10"
+        :inverted="true"
+        :class="route.meta.navClass"
       />
-      <LuxuryCarousel
-        slide-class="aspect-[375/812] sm:aspect-[1920/1080]"
-        image-class="h-full object-cover"
-      >
-        <LuxuryCarouselImage
-          v-for="i of 5"
-          :key="i"
-          src="/home-hero-sm.png"
-          :sources="sources"
-        />
-      </LuxuryCarousel>
     </header>
-    <main class="flex-grow">
+    <main
+      class="flex-grow"
+      :class="route.meta.contentClass"
+    >
       <slot />
     </main>
     <AppFooter class="flex-shrink-0" />

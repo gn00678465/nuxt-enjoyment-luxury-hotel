@@ -1,11 +1,12 @@
 import { presetDarkModeTheme } from '@nuxt-enjoyment-luxury-hotel/uno-preset';
 import { defineConfig, presetUno, transformerVariantGroup, transformerCompileClass } from 'unocss';
 import presetWebFonts from 'unocss/preset-web-fonts';
+// import { presetGrid } from 'unocss-preset-grid';
 import { luxuryHotelTheme } from './build/luxury-hotel-theme';
 
 export default defineConfig({
   presets: [
-    presetUno({ dark: 'class' }),
+    presetUno(),
     presetWebFonts({
       provider: 'google',
       fonts: {
@@ -17,6 +18,12 @@ export default defineConfig({
       theme: luxuryHotelTheme,
       variablePrefix: 'un-',
     }),
+    // presetGrid({
+    //   prefix: 'luxury',
+    //   gutter: '12px',
+    //   columns: 12,
+    //   breakpoints: { 0: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1296px' },
+    // }),
   ],
   preflights: [
     {
@@ -42,6 +49,9 @@ export default defineConfig({
             letter-spacing: 0.05em;
             line-height: 1.2;
           }
+          :root {
+            --gutter: 24px;
+          }
         `;
       },
     },
@@ -57,6 +67,32 @@ export default defineConfig({
         'border-radius': 'var(--border-radius)',
       };
     }],
+    [/^linear-gradient-to-(t|b|l|r|tl|tr|bl|br)$/, ([, d]) => {
+      const gradientDirectionMap: Record<string, string> = {
+        t: 'top',
+        b: 'bottom',
+        l: 'left',
+        r: 'right',
+        tl: 'top left',
+        tr: 'top right',
+        bl: 'bottom left',
+        br: 'bottom right',
+      };
+      return { background: `linear-gradient(to ${gradientDirectionMap[d]}, #BE9C7C, #FFF)` };
+    }],
+    [/^col(-([1-9]|1[0-2]))?$/, ([, , d]) => {
+      if (!d) {
+        return {
+          flex: '1 0 0% !important',
+        };
+      }
+      // 如果有數字參數，計算寬度百分比
+      const width = (Number(d) / 12) * 100;
+      return {
+        flex: '0 0 auto',
+        width: `${width}%`,
+      };
+    }, { layer: 'components' }],
   ],
   theme: {
     breakpoints: { 0: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1296px' },

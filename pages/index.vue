@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'client-layout',
+  layout: 'home-layout',
 });
 </script>
 

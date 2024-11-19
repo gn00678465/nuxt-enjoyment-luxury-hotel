@@ -1,12 +1,12 @@
 <script lang="ts">
+import type { NuxtLinkProps } from 'nuxt/app';
+import type { PropType } from 'vue';
+import { Tab } from '@headlessui/vue';
+
 export const luxurySessionTabProps = {
-  name: {
-    type: [String, Number],
-    required: true,
-  },
-  as: {
-    type: String,
-    default: 'div',
+  to: {
+    type: [String, Object] as PropType<NuxtLinkProps['to']>,
+    default: undefined,
   },
 };
 
@@ -17,18 +17,15 @@ export interface LuxurySessionTabProps {
 
 const LuxurySessionTab = defineComponent({
   name: 'LuxurySessionTab',
+  components: {
+    Tab,
+  },
   props: luxurySessionTabProps,
   setup(props) {
-    const { as, name } = toRefs(props);
-    const attrs = useAttrs();
-
-    const renderComponent = () => h(as.value, {
-      class: attrs.class,
-      style: attrs.style,
-    }, name.value);
+    const { to } = toRefs(props);
 
     return {
-      renderComponent,
+      to,
     };
   },
 });
@@ -37,7 +34,17 @@ export default LuxurySessionTab;
 </script>
 
 <template>
-  <component :is="renderComponent" />
+  <Tab
+    as="template"
+  >
+    <NuxtLink
+      class=":uno: relative text-title py-4 px-5.5 cursor-pointer transition-colors duration-150 outline-none after:(content-[''] absolute w-8 h-1 left-1/2 -translate-x-1/2 bg-transparent rounded-2.5 bottom-2 transition-colors duration-150) hover:(text-primary) after:hover:bg-primary"
+      :active-class="':uno: text-primary after:bg-primary'"
+      :to="to"
+    >
+      <slot />
+    </NuxtLink>
+  </Tab>
 </template>
 
 <style scoped>
