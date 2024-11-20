@@ -1,49 +1,13 @@
 {
-  "name": "nuxt-enjoyment-luxury-hotel",
+  "name": "@nuxt-enjoyment-luxury-hotel/unocss-preset",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "nuxt:add": "nuxt add",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-  "dependencies": {
-    "@headlessui/vue": "^1.7.23",
-    "@nuxt-enjoyment-luxury-hotel/uno-preset": "workspace:*",
-    "@nuxt/image": "^1.8.1",
-    "@unocss/reset": "^0.63.6",
-    "nuxt": "^3.13.2",
-    "nuxt-swiper": "^2.0.0",
-    "swiper": "^11.1.14",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "dev:unocss": "pnpm --filter @nuxt-enjoyment-luxury-hotel/unocss dev",
+    "dev:bootstrap": "pnpm --filter @nuxt-enjoyment-luxury-hotel/bootstrap dev"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@commitlint/types": "^19.5.0",
-    "@iconify-json/bi": "^1.2.1",
-    "@iconify-json/fluent": "^1.2.6",
-    "@iconify-json/ic": "^1.2.1",
-    "@iconify-json/mdi": "^1.2.1",
-    "@nuxt/eslint": "^0.6.0",
-    "@nuxt/icon": "^1.5.7",
-    "@nuxtjs/i18n": "^8.5.5",
-    "@nuxtjs/sitemap": "^6.1.2",
-    "@pinia/nuxt": "^0.5.5",
-    "@unocss/nuxt": "^0.63.6",
-    "@vueuse/core": "^11.1.0",
-    "@vueuse/nuxt": "^11.1.0",
-    "lefthook": "^1.8.1",
-    "typescript": "^5.6.3",
-    "unocss": "^0.63.6",
-    "unocss-preset-grid": "^1.6.5",
-    "unplugin-icons": "^0.19.3"
+    "vite": "^5.4.11"
   },
   "packageManager": "pnpm@9.0.4+sha512.c374b52de3de88c58fd8333df664a737279cdb0e1344ba4054d3b1fffa9a1a3670854f755dca4f16adea3f14be9896a7fcaf167409fe0c1ad60475271dafe81a"
 }

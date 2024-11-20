@@ -1,0 +1,28 @@
+{
+  "name": "@nuxt-enjoyment-luxury-hotel/uno-preset",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "index.js",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/*"
+      ]
+    }
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "@unocss/core": "^0.64.1",
+    "@unocss/rule-utils": "^0.64.1"
+  }
+}
