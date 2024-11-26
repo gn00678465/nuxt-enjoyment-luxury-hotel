@@ -1,5 +1,6 @@
 <script setup>
-import { Icon } from '@iconify/vue';
+import BiLine from '~icons/bi/line';
+import MdiInstagram from '~icons/mdi/instagram';
 </script>
 
 <template>
@@ -17,18 +18,16 @@ import { Icon } from '@iconify/vue';
               class="text-neutral-0 border rounded-circle"
               href="#"
             >
-              <Icon
+              <BiLine
                 class="p-2 fs-2"
-                icon="bi:line"
               />
             </a>
             <a
               class="text-neutral-0 border rounded-circle"
               href="#"
             >
-              <Icon
+              <MdiInstagram
                 class="p-2 fs-2"
-                icon="mdi:instagram"
               />
             </a>
           </div>

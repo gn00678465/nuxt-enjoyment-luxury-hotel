@@ -1,75 +1,148 @@
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import FluentSlideSize24Filled from '~icons/fluent/slide-size-24-filled';
-import MdiArrowRight from '~icons/mdi/arrow-right';
-import IcBaselinePerson from '~icons/ic/baseline-person';
-import MaterialSymbolsKingBed from '~icons/material-symbols/king-bed';
+import type { PictureOptions } from '~/components/Carousel.vue';
+import type { RoomCardProps } from '~/components/RoomCard.vue';
 
 definePageMeta({
-  layout: 'front-layout'
+  name: 'rooms',
+  layout: 'front-layout',
+  meta: {
+    title:'客房旅宿'
+  }
 })
 
-const modules = ref([Autoplay, Navigation, Pagination]);
+const router = useRouter()
 
-
-const importImage = (url: string) => {
-  const image = new URL(url, import.meta.url);
-  return image.href;
+function goToRoomDetail(id?: string) {
+  router.push({ name: 'room-detail', params: { roomId: id } })
 }
 
-const roomImages = computed(() => {
-  const rooms = ['a', 'b', 'c', 'd'];
-  const nums = [1, 2, 3, 4, 5];
+const heroImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
+    src: '_nuxt/assets/images/home-hero-sm.png',
+    alt: 'hero banner',
+    style: {
+      width: '100%',
+      height: '100%',
+      'object-fit': 'cover',
+      filter: 'brightness(40%)'
+    },
+    sources: [
+      {
+        srcset: '_nuxt/assets/images/home-hero.png',
+        media: '(min-width:576px)'
+      }
+    ]
+  })))
 
-  const result = rooms.reduce((acc, roomId) => {
-    acc[`room${roomId.toUpperCase()}`] = nums.reduce((obj, num) => {
-      obj[num] = {
-        desktop: importImage(`../assets/images/room-${roomId}-${num}.png`),
-        mobile: importImage(`../assets/images/room-${roomId}-sm-${num}.png`)
-      };
-      return obj;
-    }, {} as Record<number, any>);
+const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
+  {
+    title: '尊爵雙人房',
+    description: '享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。',
+    price: 10000,
+    info: {
+      size: 24,
+      bads: 2,
+      person: [2,4]
+    },
+    images: [1,2,3,4,5].map((num) => {
+      return {
+        src: `_nuxt/assets/images/room-a-sm-${num}.png`,
+        style: {
+          'object-fit': 'cover',
+        },
+        sources: [
+          {
+            srcset: `_nuxt/assets/images/room-a-${num}.png`,
+            media: '(min-width:576px)'
+          }
+        ]
+      }
+    }),
+    roomId: 'a'
+  },
+  {
+    title: '景觀雙人房',
+    description: '景觀雙人房擁有絕美的高雄市景觀，讓您在舒適的環境中欣賞城市之美。',
+    price: 10000,
+    info: {
+      size: 28,
+      bads: 2,
+      person: [2,4]
+    },
+    images: [1,2,3,4,5].map((num) => {
+      return {
+        src: `_nuxt/assets/images/room-b-sm-${num}.png`,
+        style: {
+          'object-fit': 'cover',
+        },
+        sources: [
+          {
+            srcset: `_nuxt/assets/images/room-b-${num}.png`,
+            media: '(min-width:576px)'
+          }
+        ]
+      }
+    }),
+    roomId: 'b'
+  },
+  {
+    title: '豪華雅緻房',
+    description: '享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。',
+    price: 10000,
+    info: {
+      size: 36,
+      bads: 2,
+      person: [2,4]
+    },
+    images: [1,2,3,4,5].map((num) => {
+      return {
+        src: `_nuxt/assets/images/room-c-sm-${num}.png`,
+        style: {
+          'object-fit': 'cover',
+        },
+        sources: [
+          {
+            srcset: `_nuxt/assets/images/room-c-${num}.png`,
+            media: '(min-width:576px)'
+          }
+        ]
+      }
+    }),
+    roomId: 'c'
+  },
+  {
+    title: '景觀尊榮家庭房',
+    description: '景觀尊榮家庭房不僅有寬敞的空間，還有絕美的市景視野，是帶給家庭最尊榮的待遇。',
+    price: 10000,
+    info: {
+      size: 48,
+      bads: 2,
+      person: [2,4]
+    },
+    images: [1,2,3,4,5].map((num) => {
+      return {
+        src: `_nuxt/assets/images/room-d-sm-${num}.png`,
+        style: {
+          'object-fit': 'cover',
+        },
+        sources: [
+          {
+            srcset: `_nuxt/assets/images/room-d-${num}.png`,
+            media: '(min-width:576px)'
+          }
+        ]
+      }
+    }),
+    roomId: 'd'
+  }
+])
 
-    return acc;
-  }, {} as Record<string, any>);
-
-  return result;
-})
 </script>
 
 <template>
   <main>
     <section class="hero position-relative">
-      <swiper
-        :modules="modules"
-        :slides-per-view="1"
-        :pagination="true"
-        :autoplay="{
-          delay: 3000,
-          disableOnInteraction: false,
-        }"
-      >
-        <swiper-slide
-          v-for="(num, index) in 5"
-          :key="index"
-        >
-          <picture>
-            <source
-              srcset="@/assets/images/home-hero.png"
-              media="(min-width:576px)"
-            >
-            <img
-              class="hero-img"
-              src="@/assets/images/home-hero-sm.png"
-              alt="hero banner"
-            >
-          </picture>
-        </swiper-slide>
-      </swiper>
+
+      <Carousel :aspect-ratio="{ xs: '375/466', lg: '1920 / 800' }" :images="heroImages"></Carousel>
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row gap-10 gap-md-20 w-100 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">
@@ -98,373 +171,9 @@ const roomImages = computed(() => {
           各種房型，任您挑選
         </h2>
         <ul class="d-flex flex-column gap-6 gap-md-12 list-unstyled">
-          <li
-            class="card flex-lg-row border-0 rounded-3xl overflow-hidden"
-          >
-            <div class="row">
-              <div class="col-12 col-lg-7">
-                <swiper
-                  :modules="modules"
-                  :slides-per-view="1"
-                  navigation
-                  :pagination="{ clickable: true }"
-                  :autoplay="{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }"
-                >
-                  <swiper-slide
-                    v-for="(num, index) in 5"
-                    :key="index"
-                  >
-                    <picture>
-                      <source
-                        :srcset="roomImages.roomA[num].desktop"
-                        media="(min-width: 768px)"
-                      >
-                      <img
-                        class="w-100 object-fit-cover"
-                        :src="roomImages.roomA[num].mobile"
-                        loading="lazy"
-                        :alt="`room-a-${num}`"
-                      >
-                    </picture>
-                  </swiper-slide>
-                </swiper>
-              </div>
-              <div class="col-12 col-lg-5">
-                <div class="card-body pe-md-10 py-md-10">
-                  <h3 class="card-title fs-2 fw-bold text-neutral-100">
-                    尊爵雙人房
-                  </h3>
-                  <p class="card-text mb-6 mb-md-10 fs-8 fs-md-7 fw-medium text-neutral-80">
-                    享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。
-                  </p>
-                  <ul class="d-flex gap-4 mb-6 mb-md-10 list-unstyled">
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <FluentSlideSize24Filled
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        24 坪
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <MaterialSymbolsKingBed
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        1 張大床
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <IcBaselinePerson
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2-4 人
-                      </p>
-                    </li>
-                  </ul>
-                  <div class="deco-line w-100 mb-6 mb-md-10" />
-                  <div class="d-flex justify-content-between align-items-center fs-7 fs-md-5 text-primary-100">
-                    <p class="mb-0 fw-bold">
-                      NT$ 10,000
-                    </p>
-                    <RouterLink
-                      :to="{
-                        name: 'room-detail',
-                        params: {
-                          roomId: 'a'
-                        }
-                      }"
-                      class="icon-link icon-link-hover text-primary-100"
-                    >
-                      <MdiArrowRight
-                        class="bi  fs-5"
-                      />
-                    </RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <li
-            class="card flex-lg-row border-0 rounded-3xl overflow-hidden"
-          >
-            <div class="row">
-              <div class="col-12 col-lg-7">
-                <swiper
-                  :modules="modules"
-                  :slides-per-view="1"
-                  navigation
-                  :pagination="{ clickable: true }"
-                  :autoplay="{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }"
-                >
-                  <swiper-slide
-                    v-for="(num, index) in 5"
-                    :key="index"
-                  >
-                    <picture>
-                      <source
-                        :srcset="roomImages.roomB[num].desktop"
-                        media="(min-width: 768px)"
-                      >
-                      <img
-                        class="w-100 object-fit-cover"
-                        :src="roomImages.roomB[num].mobile"
-                        loading="lazy"
-                        :alt="`room-b-${num}`"
-                      >
-                    </picture>
-                  </swiper-slide>
-                </swiper>
-              </div>
-              <div class="col-12 col-lg-5">
-                <div class="card-body pe-md-10 py-md-10">
-                  <h3 class="card-title fs-2 fw-bold text-neutral-100">
-                    景觀雙人房
-                  </h3>
-                  <p class="card-text mb-6 mb-md-10 fs-8 fs-md-7 fw-medium text-neutral-80">
-                    景觀雙人房擁有絕美的高雄市景觀，讓您在舒適的環境中欣賞城市之美。
-                  </p>
-                  <ul class="d-flex gap-4 mb-6 mb-md-10 list-unstyled">
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <FluentSlideSize24Filled
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        28 坪
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <MaterialSymbolsKingBed
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        1 張大床
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <IcBaselinePerson
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2-4 人
-                      </p>
-                    </li>
-                  </ul>
-                  <div class="deco-line w-100 mb-6 mb-md-10" />
-                  <div class="d-flex justify-content-between align-items-center fs-7 fs-md-5 text-primary-100">
-                    <p class="mb-0 fw-bold">
-                      NT$ 10,000
-                    </p>
-                    <RouterLink
-                      :to="{
-                        name: 'room-detail',
-                        params: {
-                          roomId: 'b'
-                        }
-                      }"
-                      class="icon-link icon-link-hover text-primary-100"
-                    >
-                      <MdiArrowRight
-                        class="bi  fs-5"
-                      />
-                    </RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <li
-            class="card flex-lg-row border-0 rounded-3xl overflow-hidden"
-          >
-            <div class="row">
-              <div class="col-12 col-lg-7">
-                <swiper
-                  :modules="modules"
-                  :slides-per-view="1"
-                  navigation
-                  :pagination="{ clickable: true }"
-                  :autoplay="{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }"
-                >
-                  <swiper-slide
-                    v-for="(num, index) in 5"
-                    :key="index"
-                  >
-                    <picture>
-                      <source
-                        :srcset="roomImages.roomC[num].desktop"
-                        media="(min-width: 768px)"
-                      >
-                      <img
-                        class="w-100 object-fit-cover"
-                        :src="roomImages.roomC[num].mobile"
-                        loading="lazy"
-                        :alt="`room-c-${num}`"
-                      >
-                    </picture>
-                  </swiper-slide>
-                </swiper>
-              </div>
-              <div class="col-12 col-lg-5">
-                <div class="card-body pe-md-10 py-md-10">
-                  <h3 class="card-title fs-2 fw-bold text-neutral-100">
-                    豪華雅緻房
-                  </h3>
-                  <p class="card-text mb-6 mb-md-10 fs-8 fs-md-7 fw-medium text-neutral-80">
-                    享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。
-                  </p>
-                  <ul class="d-flex gap-4 mb-6 mb-md-10 list-unstyled">
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <FluentSlideSize24Filled
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        36 坪
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <MaterialSymbolsKingBed
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2 張大床
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <IcBaselinePerson
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2-4 人
-                      </p>
-                    </li>
-                  </ul>
-                  <div class="deco-line w-100 mb-6 mb-md-10" />
-                  <div class="d-flex justify-content-between align-items-center fs-7 fs-md-5 text-primary-100">
-                    <p class="mb-0 fw-bold">
-                      NT$ 10,000
-                    </p>
-                    <RouterLink
-                      :to="{
-                        name: 'room-detail',
-                        params: {
-                          roomId: 'c'
-                        }
-                      }"
-                      class="icon-link icon-link-hover text-primary-100"
-                    >
-                      <MdiArrowRight
-                        class="bi  fs-5"
-                        icon="mdi:arrow-right"
-                      />
-                    </RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-
-          <li
-            class="card flex-lg-row border-0 rounded-3xl overflow-hidden"
-          >
-            <div class="row">
-              <div class="col-12 col-lg-7">
-                <swiper
-                  :modules="modules"
-                  :slides-per-view="1"
-                  navigation
-                  :pagination="{ clickable: true }"
-                  :autoplay="{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }"
-                >
-                  <swiper-slide
-                    v-for="(num, index) in 5"
-                    :key="index"
-                  >
-                    <picture>
-                      <source
-                        :srcset="roomImages.roomD[num].desktop"
-                        media="(min-width: 768px)"
-                      >
-                      <img
-                        class="w-100 object-fit-cover"
-                        :src="roomImages.roomD[num].mobile"
-                        loading="lazy"
-                        :alt="`room-d-${num}`"
-                      >
-                    </picture>
-                  </swiper-slide>
-                </swiper>
-              </div>
-              <div class="col-12 col-lg-5">
-                <div class="card-body pe-md-10 py-md-10">
-                  <h3 class="card-title fs-2 fw-bold text-neutral-100">
-                    景觀尊榮家庭房
-                  </h3>
-                  <p class="card-text mb-6 mb-md-10 fs-8 fs-md-7 fw-medium text-neutral-80">
-                    景觀尊榮家庭房不僅有寬敞的空間，還有絕美的市景視野，是帶給家庭最尊榮的待遇。
-                  </p>
-                  <ul class="d-flex gap-4 mb-6 mb-md-10 list-unstyled">
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <FluentSlideSize24Filled
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        48 坪
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <MaterialSymbolsKingBed
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2 張大床
-                      </p>
-                    </li>
-                    <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
-                      <IcBaselinePerson
-                        class="mb-2 fs-5 text-primary-100"
-                      />
-                      <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                        2-4 人
-                      </p>
-                    </li>
-                  </ul>
-                  <div class="deco-line w-100 mb-6 mb-md-10" />
-                  <div class="d-flex justify-content-between align-items-center fs-7 fs-md-5 text-primary-100">
-                    <p class="mb-0 fw-bold">
-                      NT$ 10,000
-                    </p>
-                    <RouterLink
-                      :to="{
-                        name: 'room-detail',
-                        params: {
-                          roomId: 'd'
-                        }
-                      }"
-                      class="icon-link icon-link-hover text-primary-100"
-                    >
-                      <MdiArrowRight
-                        class="bi  fs-5"
-                      />
-                    </RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <li v-for="room of roomInfos" class="card flex-lg-row border-0 rounded-3xl overflow-hidden">
+            <room-card :title="room.title" :description="room.description"  :price="room.price"  style="flex-grow: 1" :info="room.info" :images="room.images"
+              @click="goToRoomDetail(room.roomId)" />
           </li>
         </ul>
       </div>
@@ -514,11 +223,6 @@ $grid-breakpoints: (
 
 .rounded-3xl {
   border-radius: 1.25rem;
-}
-
-.card-info {
-  width: 97px;
-  height: 97px;
 }
 
 .swiper {

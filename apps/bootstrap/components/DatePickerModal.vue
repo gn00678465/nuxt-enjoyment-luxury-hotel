@@ -1,32 +1,26 @@
-<script setup>
-import { DatePicker } from 'v-calendar';
-// import 'v-calendar/style.css';
-import { useScreens } from 'vue-screen-utils';
+<script setup lang="ts">
+import IcBaselineMinus from '~icons/ic/baseline-minus';
+import IcBaselinePlus from '~icons/ic/baseline-plus';
+import 'v-calendar/style.css';
+import type { Modal } from "bootstrap";
 
-// import Modal from 'bootstrap/js/dist/modal';
-import { Icon } from '@iconify/vue';
+const modalRef = ref<HTMLDivElement>()
+const { $bootstrap } = useNuxtApp();
+const modal = ref<Modal|null>(null);
 
-const modal = ref(null);
-
-onMounted(() => {
-  modal.value = new Modal(document.getElementById('dateModal'));
-})
-
-const openModal = () => {
-  modal.value.show();
+const open = () => {
+  modal.value?.show()
 }
 
-const closeModal = () => {
-  modal.value.hide();
+const close = () => {
+  modal.value?.hide()
 }
 
-defineExpose({
-  openModal,
-  closeModal
-})
+const toggle = () => {
+  modal.value?.toggle()
+};
 
 const emit = defineEmits(['handleDateChange']);
-
 
 const props = defineProps({
   dateTime: {
@@ -50,16 +44,16 @@ const masks = {
   modelValue: 'YYYY-MM-DD'
 };
 
-const { mapCurrent } = useScreens({
-  md: '768px',
-});
+// const { mapCurrent } = useScreens({
+//   md: '768px',
+// });
 
-const rows = mapCurrent({ md: 1}, 2);
-const columns = mapCurrent({ md: 2}, 1);
-const expanded = mapCurrent({ md: false}, true);
-const titlePosition = mapCurrent({ md: 'center'}, 'left');
+const rows = useViewportMap({ md: 1}, 2)
+const columns = useViewportMap({ md: 2}, 1);
+const expanded = useViewportMap({ md: false}, true);
+const titlePosition = useViewportMap({ md: 'center'}, 'left');
 
-const formatDateTitle = (date) => date?.replaceAll('-', ' / ');
+const formatDateTitle = (date: string) => date?.replaceAll('-', ' / ');
 
 const daysCount = computed(() => {
   const startDate = tempDate.date.start;
@@ -85,7 +79,7 @@ const confirmDateOnMobile = () => {
 }
 
 const confirmDate = () => {
-  const isMobile = mapCurrent({md: false}, true);
+  const isMobile = useViewportMap({md: false}, true);
 
   if (isMobile.value) {
     emit('handleDateChange', {
@@ -100,7 +94,7 @@ const confirmDate = () => {
     });
   }
 
-  closeModal();
+  close();
 }
 
 const clearDate = () => {
@@ -109,12 +103,61 @@ const clearDate = () => {
   tempDate.key++;
 }
 
+defineExpose<DatePickerModalInst>({
+  open,
+  close,
+  toggle
+})
 
+onMounted(() => {
+  if (modalRef.value) {
+    modal.value = new $bootstrap.Modal(modalRef.value);
+  }
+})
+
+onBeforeUnmount(() => {
+  modal.value?.dispose()
+})
+</script>
+
+<script lang="ts">
+export interface DatePickerModalInst {
+  open: () => void
+  close: () => void
+  toggle: () => void
+}
+
+export type BreakpointKeys = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl'
+
+export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
+  mapping: Partial<T>, 
+  defaultValue: T[BreakpointKeys]
+): Ref<T[BreakpointKeys]> {
+  const viewport = useViewport()
+
+  // 斷點順序（從大到小）
+  const breakpointOrder: BreakpointKeys[] = [
+    'xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs'
+  ]
+
+  return computed(() => {
+    // 遍歷斷點，找出第一個符合的值
+    for (const bp of breakpointOrder) {
+      if (viewport.isGreaterOrEquals(bp) && mapping[bp] !== undefined) {
+        return mapping[bp] as T[BreakpointKeys]
+      }
+    }
+
+    // 若無對應，返回預設值
+    return defaultValue
+  })
+}
 </script>
 
 <template>
   <div
     id="dateModal"
+    ref="modalRef"
     class="modal fade"
     tabindex="-1"
     aria-hidden="true"
@@ -130,7 +173,7 @@ const clearDate = () => {
               type="button"
               class="btn-close"
               style="margin-left: -8px !important;"
-              @click="closeModal"
+              @click="close"
             />
             <h3
               v-if="tempDate.date.end === null"
@@ -212,20 +255,22 @@ const clearDate = () => {
             v-if="!isConfirmDateOnMobile"
             class="date-picker"
           >
-            <VDatePicker
-              :key="tempDate.key"
-              v-model.range.string="tempDate.date"
-              color="primary"
-              :masks="masks"
-              :first-day-of-week="1"
-              :min-date="tempDate.minDate"
-              :max-date="tempDate.maxDate"
-              :rows="rows"
-              :columns="columns"
-              :expanded="expanded"
-              :title-position="titlePosition"
-              class="border-0"
-            />
+            <ClientOnly>
+              <VDatePicker
+                :key="tempDate.key"
+                v-model.range.string="tempDate.date"
+                color="primary"
+                :masks="masks"
+                :first-day-of-week="1"
+                :min-date="tempDate.minDate"
+                :max-date="tempDate.maxDate"
+                :rows="rows"
+                :columns="columns"
+                :expanded="expanded"
+                :title-position="titlePosition"
+                class="border-0"
+              />
+            </ClientOnly>
           </div>
 
           <div v-else>
@@ -243,9 +288,8 @@ const clearDate = () => {
                 type="button"
                 @click="bookingPeopleMobile--"
               >
-                <Icon
+                <IcBaselineMinus
                   class="fs-5 text-neutral-100"
-                  icon="ic:baseline-minus"
                 />
               </button>
 
@@ -268,9 +312,8 @@ const clearDate = () => {
                 type="button"
                 @click="bookingPeopleMobile++"
               >
-                <Icon
+                <IcBaselinePlus
                   class="fs-5 text-neutral-100"
-                  icon="ic:baseline-plus"
                 />
               </button>
             </div>

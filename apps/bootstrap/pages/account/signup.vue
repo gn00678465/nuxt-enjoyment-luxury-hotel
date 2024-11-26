@@ -2,7 +2,11 @@
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
 
 definePageMeta({
-  layout: 'account-layout'
+  name: 'signup',
+  layout: 'account-layout',
+  meta: {
+    title:'註冊會員'
+  }
 })
 
 const isEmailAndPasswordValid = ref(false);
@@ -265,12 +269,12 @@ const isEmailAndPasswordValid = ref(false);
 
     <p class="mb-0 fs-8 fs-md-7">
       <span class="me-2 text-neutral-0 fw-medium">已經有會員了嗎？</span>
-      <RouterLink
+      <NuxtLink
         to="login"
         class="text-primary-100 fw-bold text-decoration-underline bg-transparent border-0"
       >
         <span>立即登入</span>
-      </RouterLink>
+      </NuxtLink>
     </p>
   </div>
 </template>

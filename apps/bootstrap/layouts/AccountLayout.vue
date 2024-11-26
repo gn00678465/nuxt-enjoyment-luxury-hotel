@@ -1,6 +1,7 @@
 <script setup>
-import { RouterLink } from 'vue-router'
-import { Icon } from '@iconify/vue';
+import MdiAccountCircleOutline from '~icons/mdi/account-circle-outline';
+import MaterialSymbolsMenuRounded from '~icons/material-symbols/menu-rounded';
+import MaterialSymbolsCloseRounded from '~icons/material-symbols/close-rounded';
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import { Icon } from '@iconify/vue';
     >
       <nav class="navbar navbar-expand-md p-0 mx-3 my-4 mx-md-20 my-md-6">
         <div class="container-fluid justify-content-between p-0">
-          <RouterLink
+          <NuxtLink
             class="navbar-brand p-0"
             to="/"
           >
@@ -19,7 +20,7 @@ import { Icon } from '@iconify/vue';
               alt="logo"
               class="logo img-fluid"
             >
-          </RouterLink>
+          </NuxtLink>
           <ClientOnly>
             <button
               class="navbar-toggler collapsed p-2 text-white border-0 shadow-none"
@@ -30,13 +31,11 @@ import { Icon } from '@iconify/vue';
               aria-expanded="false"
               aria-label="Toggle navigation"
             >
-              <Icon
+              <MaterialSymbolsCloseRounded
                 class="fs-1"
-                icon="mdi:close"
               />
-              <Icon
+              <MaterialSymbolsMenuRounded
                 class="fs-5"
-                icon="mdi:menu"
               />
             </button>
           </ClientOnly>
@@ -46,40 +45,39 @@ import { Icon } from '@iconify/vue';
           >
             <ul class="d-md-none navbar-nav gap-4 ms-auto fw-bold">
               <li class="nav-item">
-                <RouterLink
+                <NuxtLink
                   to="/"
                   class="nav-link p-4 text-neutral-0"
                 >
                   客房旅宿
-                </RouterLink>
+                </NuxtLink>
               </li>
               <li class="d-none d-md-block nav-item">
-                <RouterLink
+                <NuxtLink
                   to="/"
                   class="nav-link d-flex gap-2 p-4 text-neutral-0"
                 >
-                  <Icon
+                  <MdiAccountCircleOutline
                     class="fs-5"
-                    icon="mdi:account-circle-outline"
                   />
                   Jessica
-                </RouterLink>
+                </NuxtLink>
               </li>
               <li class="d-md-none nav-item">
-                <RouterLink
+                <NuxtLink
                   to="/"
                   class="nav-link p-4 text-neutral-0"
                 >
                   會員登入
-                </RouterLink>
+                </NuxtLink>
               </li>
               <li class="nav-item">
-                <RouterLink
+                <NuxtLink
                   to="/"
                   class="btn btn-primary-100 px-8 py-4 text-white fw-bold border-0 rounded-3"
                 >
                   立即訂房
-                </RouterLink>
+                </NuxtLink>
               </li>
             </ul>
           </div>

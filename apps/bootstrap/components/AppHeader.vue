@@ -1,7 +1,10 @@
 <script setup>
-import { Icon } from '@iconify/vue';
+import MdiAccountCircleOutline from '~icons/mdi/account-circle-outline';
+import MaterialSymbolsMenuRounded from '~icons/material-symbols/menu-rounded';
+import MaterialSymbolsCloseRounded from '~icons/material-symbols/close-rounded';
 
 const route = useRoute();
+const router = useRouter()
 const transparentBgRoute = ['home', 'rooms'];
 
 const isTransparentRoute = computed(() => transparentBgRoute.includes(route.name));
@@ -11,6 +14,10 @@ const isScrolled = ref(false);
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50;
+}
+
+function onLogout() {
+  router.push({ name: 'login' })
 }
 
 onMounted(() => {
@@ -35,7 +42,7 @@ onUnmounted(() => {
   >
     <nav class="navbar navbar-expand-md p-0 px-3 py-4 px-md-20 py-md-6">
       <div class="container-fluid justify-content-between p-0">
-        <RouterLink
+        <NuxtLink
           class="navbar-brand p-0"
           to="/"
         >
@@ -44,7 +51,7 @@ onUnmounted(() => {
             alt="logo"
             class="logo img-fluid"
           >
-        </RouterLink>
+        </NuxtLink>
         <button
           class="navbar-toggler collapsed p-2 text-white border-0 shadow-none"
           type="button"
@@ -54,13 +61,11 @@ onUnmounted(() => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <Icon
+          <MaterialSymbolsCloseRounded
             class="fs-1"
-            icon="mdi:close"
           />
-          <Icon
+          <MaterialSymbolsMenuRounded
             class="fs-5"
-            icon="mdi:menu"
           />
         </button>
         <div
@@ -69,11 +74,12 @@ onUnmounted(() => {
         >
           <ul class="navbar-nav gap-4 ms-auto fw-bold">
             <li class="nav-item">
-              <RouterLink
+              <NuxtLink
+                :to="{ name: 'rooms' }"
                 class="nav-link p-4 text-neutral-0"
               >
                 客房旅宿
-              </RouterLink>
+              </NuxtLink>
             </li>
             <li class="d-none d-md-block nav-item">
               <div class="btn-group">
@@ -82,9 +88,8 @@ onUnmounted(() => {
                   class="nav-link d-flex gap-2 p-4 text-neutral-0"
                   data-bs-toggle="dropdown"
                 >
-                  <Icon 
+                  <MdiAccountCircleOutline 
                     class="fs-5"
-                    icon="mdi:account-circle-outline"
                   />
                   Jessica
                 </button>
@@ -93,34 +98,36 @@ onUnmounted(() => {
                   style="right: 0; left: auto; border-radius: 20px;"
                 >
                   <li>
-                    <a
+                    <NuxtLink
                       class="dropdown-item px-6 py-4"
-                      href="#"
-                    >我的帳戶</a>
+                      :to="{ name: 'user-profile', params: { userId: 'fdsffdsafdssaf' } }"
+                    >我的帳戶</NuxtLink>
                   </li>
                   <li>
                     <a
                       class="dropdown-item px-6 py-4"
                       href="#"
+                      @click.prevent="onLogout"
                     >登出</a>
                   </li>
                 </ul>
               </div>
             </li>
             <li class="d-md-none nav-item">
-              <RouterLink
-                to="/"
+              <NuxtLink
+                :to="{ name: 'login' }"
                 class="nav-link p-4 text-neutral-0"
               >
                 會員登入
-              </RouterLink>
+              </NuxtLink>
             </li>
             <li class="nav-item">
-              <RouterLink
+              <NuxtLink
                 class="btn btn-primary-100 px-8 py-4 text-white fw-bold border-0 rounded-3"
+                :to="{ name: 'rooms' }"
               >
                 立即訂房
-              </RouterLink>
+              </NuxtLink>
             </li>
           </ul>
         </div>
@@ -218,6 +225,4 @@ header.scrolled {
   --bs-dropdown-link-active-color: #fff;
   --bs-dropdown-link-active-bg: #BF9D7D;
 }
-
-
 </style>

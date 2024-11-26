@@ -1,60 +1,67 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import MdiArrowLeft from '~icons/mdi/arrow-left';
+import MdiArrowRight from '~icons/mdi/arrow-right';
+import IcBaselineDirectionsCar from '~icons/ic/baseline-directions-car';
+import IcBaselineTrain from '~icons/ic/baseline-train';
+import MdiCarSide from '~icons/mdi/car-side';
+import type { PictureOptions, CarouselInst } from '~/components/Carousel.vue';
 
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+definePageMeta({
+  layout: 'front-layout',
+  name: 'home',
+  meta: {
+    title: 'home'
+  }
+})
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+const roomSwiper = ref<CarouselInst>()
 
-const modules = ref([Autoplay, Navigation, Pagination]);
+const heroImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
+    src: '_nuxt/assets/images/home-hero-sm.png',
+    alt: 'hero banner',
+    style: {
+      width: '100%',
+      height: '100%',
+      'object-fit': 'cover',
+      filter: 'brightness(40%)'
+    },
+    sources: [
+      {
+        srcset: '_nuxt/assets/images/home-hero.png',
+        media: '(min-width:576px)'
+      }
+    ]
+  })))
 
-const roomSwiper = ref<Swiper | null>(null);
+const heroRoomImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
+  src: '_nuxt/assets/images/home-room-sm-1.png',
+  alt: 'hero banner',
+  style: {
+    width: '100%'
+  },
+  sources: [
+    {
+      srcset: '_nuxt/assets/images/home-room-1.png',
+      media: '(min-width:576px)'
+    }
+  ]
+})))
 
 const slidePrev = () => {
-  roomSwiper.value.$el.swiper.slidePrev();
+  roomSwiper.value?.prev()
 }
 
 const slideNext = () => {
-  roomSwiper.value.$el.swiper.slideNext();
+  roomSwiper.value?.next()
 }
-
-
 
 </script>
 
 <template>
   <main class="overflow-hidden">
     <section class="hero position-relative">
-      <ClientOnly>
-        <swiper-container
-          :modules="modules"
-          :slides-per-view="1"
-          :pagination="true"
-          :autoplay="{
-            delay: 3000,
-            disableOnInteraction: false,
-          }"
-        >
-          <swiper-slide
-            v-for="(num, index) in 5"
-            :key="index"
-          >
-            <picture>
-              <source
-                srcset="@/assets/images/home-hero.png"
-                media="(min-width:576px)"
-              >
-              <img
-                class="hero-img"
-                src="@/assets/images/home-hero-sm.png"
-                alt="hero banner"
-              >
-            </picture>
-          </swiper-slide>
-        </swiper-container>
-      </ClientOnly>
+
+      <Carousel :aspect-ratio="{ xs: '375/812', md: '16 / 9' }" :images="heroImages"></Carousel>
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row justify-content-md-between gap-md-10 w-100 px-md-20 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">
@@ -76,13 +83,13 @@ const slideNext = () => {
             <p class="text-neutral-40 fw-semibold">
               我們致力於為您提供無與倫比的奢華體驗與優質服務
             </p>
-            <RouterLink 
+            <NuxtLink 
               to="/rooms"
               class="btn btn-neutral-0 d-flex justify-content-end align-items-center gap-3 w-100 text-end text-neutral-100 fs-5 fw-semibold border-0"
             >
               立即訂房
               <div class="cta-deco" />
-            </RouterLink>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -215,36 +222,10 @@ const slideNext = () => {
 
     <section class="room-intro position-relative px-3 py-20 px-md-0 py-md-30 bg-neutral-120">
       <div class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-md-start align-items-md-end gap-6 gap-md-20">
-        <swiper
-          ref="roomSwiper"
-          :modules="modules"
-          :slides-per-view="1"
-          :pagination="true"
-          :autoplay="{
-            delay: 5000,
-            disableOnInteraction: false,
-          }"
-          :loop="true"
-        >
-          <swiper-slide
-            v-for="(num, index) in 5"
-            :key="index"
-          >
-            <picture>
-              <source
-                srcset="@/assets/images/home-room-1.png"
-                media="(min-width:768px)"
-              >
-              <img
-                class="w-100"
-                src="@/assets/images/home-room-sm-1.png"
-                alt="room-a"
-              >
-            </picture>
-          </swiper-slide>
-        </swiper>
-        
-        <div class="room-intro-content text-neutral-0">
+
+        <Carousel ref="roomSwiper" class="w-50" :images="heroRoomImages" :aspect-ratio="{ xs: '351/300', lg: '1/1' }"></Carousel>
+
+        <div class="room-intro-content text-neutral-0 flex-grow-1">
           <h2 class="mb-2 mb-md-4 fw-bold">
             尊爵雙人房
           </h2>
@@ -254,21 +235,20 @@ const slideNext = () => {
           <div class="mb-6 mb-md-10 fs-3 fw-bold">
             NT$ 10,000
           </div>
-          <RouterLink
+          <NuxtLink
             to="/rooms"
             class="btn btn-neutral-0 d-flex justify-content-end align-items-center gap-3 w-100 p-5 p-md-10 mb-6 mb-md-10 text-end text-neutral-100 fs-7 fs-md-5 fw-bold border-0"
           >
             查看更多
             <div class="cta-deco" />
-          </RouterLink>
+          </NuxtLink>
           <div class="d-flex justify-content-end">
             <button
               class="bg-transparent text-primary-100 icon-link icon-link-hover border-0"
               type="button"
               @click="slidePrev"
             >
-              <Icon
-                icon="mdi:arrow-left"
+              <MdiArrowLeft
                 class="bi m-4"
                 style="font-size: 1.5rem; --bs-icon-link-transform: translateX(-0.25em);"
               />
@@ -278,8 +258,7 @@ const slideNext = () => {
               type="button"
               @click="slideNext"
             >
-              <Icon
-                icon="mdi:arrow-right"
+              <MdiArrowRight
                 class="bi m-4"
                 style="font-size: 1.5rem;"
               />
@@ -487,9 +466,8 @@ const slideNext = () => {
             </picture>
           </div>
           <div class="col-12 col-md-4 text-neutral-0">
-            <Icon
+            <IcBaselineDirectionsCar
               class="mb-2 mb-md-4 display-1 text-primary-100"
-              icon="ic:baseline-directions-car"
             />
             <h5 class="fs-7 fs-md-5 fw-bold">
               自行開車
@@ -499,9 +477,8 @@ const slideNext = () => {
             </p>
           </div>
           <div class="col-12 col-md-4 text-neutral-0">
-            <Icon
+            <IcBaselineTrain
               class="mb-2 mb-md-4 display-1 text-primary-100"
-              icon="ic:baseline-train"
             />
             <h5 class="fs-7 fs-md-5 fw-bold">
               高鐵/火車
@@ -511,9 +488,8 @@ const slideNext = () => {
             </p>
           </div>
           <div class="col-12 col-md-4 text-neutral-0">
-            <Icon
+            <MdiCarSide
               class="mb-2 mb-md-4 display-1 text-primary-100"
-              icon="mdi:car-side"
             />
             <h5 class="fs-7 fs-md-5 fw-bold">
               禮賓車服務

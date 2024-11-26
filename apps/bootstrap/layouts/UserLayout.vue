@@ -1,8 +1,8 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
+  <AppHeader />
   <main class="pt-18 pt-md-30 bg-neutral-120">
     <section class="position-relative">
       <picture>
@@ -35,7 +35,7 @@ import { RouterLink, RouterView } from 'vue-router';
       <div class="container">
         <ul class="nav mb-10 mb-md-20 fw-bold">
           <li class="nav-item position-relative">
-            <RouterLink
+            <NuxtLink
               :to="{
                 name: 'user-profile',
                 params: {
@@ -46,10 +46,10 @@ import { RouterLink, RouterView } from 'vue-router';
               class="nav-link px-6 py-4 text-white"
             >
               個人資料
-            </RouterLink>
+            </NuxtLink>
           </li>
           <li class="nav-item position-relative">
-            <RouterLink
+            <NuxtLink
               :to="{
                 name: 'user-order',
                 params: {
@@ -60,11 +60,11 @@ import { RouterLink, RouterView } from 'vue-router';
               class="nav-link px-6 py-4 text-white"
             >
               我的訂單
-            </RouterLink>
+            </NuxtLink>
           </li>
         </ul>
         
-        <RouterView />
+        <NuxtPage />
       </div>
     </section>
 
@@ -80,6 +80,7 @@ import { RouterLink, RouterView } from 'vue-router';
       >
     </picture>
   </main>
+  <AppFooter />
 </template>
 
 <style lang="scss" scoped>

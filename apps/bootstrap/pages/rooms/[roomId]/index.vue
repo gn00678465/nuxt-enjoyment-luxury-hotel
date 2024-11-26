@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import FluentSlideSize24Filled from '~icons/fluent/slide-size-24-filled';
+import MaterialSymbolsKingBed from '~icons/material-symbols/king-bed';
+import IcBaselinePerson from '~icons/ic/baseline-person';
+import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
+import IcBaselinePlus from '~icons/ic/baseline-plus';
+import IcBaselineMinus from '~icons/ic/baseline-minus';
+import type { DatePickerModalInst } from '~/components/DatePickerModal.vue';
 
 definePageMeta({
-  layout: 'front-layout'
+  name: 'room-detail',
+  layout: 'front-layout',
+  meta: {
+    title:'房型詳細'
+  }
 })
 
-const datePickerModal = ref(null);
+const datePickerModal = ref<DatePickerModalInst|null>(null);
 
 const openModal = () => {
-  // datePickerModal.value.openModal();
+  datePickerModal.value?.open()
 }
 
 const MAX_BOOKING_PEOPLE = 10;
@@ -133,27 +143,24 @@ const handleDateChange = (bookingInfo) => {
               </h3>
               <ul class="d-flex gap-4 list-unstyled">
                 <li class="card-info px-4 py-5 bg-neutral-0 border border-primary-40 rounded-3">
-                  <Icon
+                  <FluentSlideSize24Filled
                     class="mb-2 fs-5 text-primary-100"
-                    icon="fluent:slide-size-24-filled"
                   />
                   <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
                     24 坪
                   </p>
                 </li>
                 <li class="card-info px-4 py-5 bg-neutral-0 border border-primary-40 rounded-3">
-                  <Icon
+                  <MaterialSymbolsKingBed
                     class="mb-2 fs-5 text-primary-100"
-                    icon="material-symbols:king-bed"
                   />
                   <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
                     1 張大床
                   </p>
                 </li>
                 <li class="card-info px-4 py-5 bg-neutral-0 border border-primary-40 rounded-3">
-                  <Icon
+                  <IcBaselinePerson
                     class="mb-2 fs-5 text-primary-100"
-                    icon="ic:baseline-person"
                   />
                   <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
                     2-4 人
@@ -168,45 +175,45 @@ const handleDateChange = (bookingInfo) => {
               </h3>
               <ul class="d-flex flex-wrap gap-6 gap-md-10 p-6 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
                 <li class="d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     市景
                   </p>
                 </li>
                 <li class="d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     獨立衛浴
                   </p>
                 </li>
                 <li class="d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     客廳
                   </p>
                 </li>
                 <li class="d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     書房
                   </p>
                 </li>
                 <li class="d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     樓層電梯
@@ -221,90 +228,90 @@ const handleDateChange = (bookingInfo) => {
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     平面電視
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     吹風機
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     冰箱
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     熱水壺
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     檯燈
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     衣櫃
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     除濕機
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     浴缸
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     書桌
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     音響
@@ -319,90 +326,90 @@ const handleDateChange = (bookingInfo) => {
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     衛生紙
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     拖鞋
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     沐浴用品
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     清潔用品
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     刮鬍刀
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     吊衣架
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     浴巾
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     刷牙用品
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     罐裝水
                   </p>
                 </li>
                 <li class="flex-item d-flex gap-2">
-                  <Icon
+                  <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
-                    icon="material-symbols:check"
+                    
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
                     梳子
@@ -499,15 +506,14 @@ const handleDateChange = (bookingInfo) => {
                       type="button"
                       @click="bookingPeople--"
                     >
-                      <Icon
+                      <IcBaselineMinus
                         class="fs-5 text-neutral-100"
-                        icon="ic:baseline-minus"
                       />
                     </button>
 
                     <h6
                       id="people"
-                      class="d-flex justify-content-center align-items-center fw-bold text-neutral-100"
+                      class="d-flex justify-content-center align-items-center fw-bold text-neutral-100 user-select-none"
                       style="width: 24px;"
                       name="people"
                     >
@@ -524,9 +530,8 @@ const handleDateChange = (bookingInfo) => {
                       type="button"
                       @click="bookingPeople++"
                     >
-                      <Icon
+                      <IcBaselinePlus
                         class="fs-5 text-neutral-100"
-                        icon="ic:baseline-plus"
                       />
                     </button>
                   </div>
@@ -536,12 +541,12 @@ const handleDateChange = (bookingInfo) => {
               <h5 class="mb-0 text-primary-100 fw-bold">
                 NT$ 10,000
               </h5>
-              <RouterLink
+              <NuxtLink
                 :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
                 class="btn btn-primary-100 py-4 text-neutral-0 fw-bold rounded-3"
               >
                 立即預訂
-              </RouterLink>
+              </NuxtLink>
             </div>
           </div>
         </div>
@@ -564,21 +569,21 @@ const handleDateChange = (bookingInfo) => {
             <small class="text-neutral-80 fw-medium">ＮＴ$ 10,000 / {{ daysCount }} 晚 / {{ bookingPeople }} 人</small>
             <span class="text-neutral fs-9 fw-medium text-decoration-underline">{{ daysFormatOnMobile(bookingDate.date?.start) }} - {{ daysFormatOnMobile(bookingDate.date?.end) }}</span>
           </div>
-          <RouterLink
+          <NuxtLink
             :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
             class="btn btn-primary-100 px-12 py-4 text-neutral-0 fw-bold rounded-3"
           >
             立即預訂
-          </RouterLink>
+          </NuxtLink>
         </template>
       </div>
     </section>
 
-    <!-- <DatePickerModal
+    <DatePickerModal
       ref="datePickerModal"
       :date-time="bookingDate"
       @handle-date-change="handleDateChange"
-    /> -->
+    />
   </main>
 </template>
 
