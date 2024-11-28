@@ -11,33 +11,34 @@
   },
   "dependencies": {
     "@nuxt/image": "^1.8.1",
+    "@nuxt/image-edge": "latest",
     "aos": "^2.3.4",
-    "bootstrap": "^5.3.2",
-    "nuxt": "^3.14.159",
-    "swiper": "^11.1.14",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "bootstrap": "^5.3.3",
+    "nuxt": "^3.14.1592",
+    "swiper": "^11.1.15",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@iconify-json/bi": "^1.2.1",
-    "@iconify-json/fluent": "^1.2.6",
+    "@iconify-json/fluent": "^1.2.8",
     "@iconify-json/ic": "^1.2.1",
     "@iconify-json/mdi": "^1.2.1",
-    "@iconify/json": "^2.2.273",
-    "@nuxt/eslint": "^0.7.0",
-    "@nuxt/icon": "^1.7.5",
+    "@iconify/json": "^2.2.276",
+    "@nuxt/eslint": "^0.7.2",
+    "@nuxt/icon": "^1.8.2",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@nuxtjs/i18n": "^9.0.0",
+    "@nuxtjs/i18n": "^9.1.0",
     "@nuxtjs/sitemap": "^6.1.5",
     "@pinia/nuxt": "^0.7.0",
     "@samk-dev/nuxt-vcalendar": "^1.0.4",
     "@types/bootstrap": "^5.2.10",
     "@vee-validate/nuxt": "^4.14.7",
-    "@vueuse/nuxt": "^11.2.0",
+    "@vueuse/nuxt": "^11.3.0",
     "nuxt-swiper": "^2.0.0",
     "nuxt-viewport": "^2.2.0",
     "nuxt-xstate": "^0.6.2",
     "sass": "^1.77.6",
-    "unplugin-icons": "^0.20.1"
+    "unplugin-icons": "^0.20.2"
   }
 }

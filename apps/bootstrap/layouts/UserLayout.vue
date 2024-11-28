@@ -6,24 +6,22 @@
   <main class="pt-18 pt-md-30 bg-neutral-120">
     <section class="position-relative">
       <picture>
-        <source
-          srcset="@/assets/images/profile-hero.png"
+        <NuxtSource
+          src="/profile-hero.png"
           media="(min-width: 576px)"
-        >
-        <img
-          class="w-100 object-fit-cover"
+          :modifiers="{ format: 'png' }"
+        />
+        <NuxtImg
+          class="w-100"
           style="height: 384px;"
-          src="@/assets/images/profile-hero-sm.png"
+          src="/profile-hero-sm.png"
           alt="profile-hero"
-        >
+          fit="cover"
+        />
       </picture>
       <div class="container">
         <div class="hero-content d-flex flex-column flex-md-row justify-content-center justify-content-md-start align-items-md-center gap-4 gap-md-6 mx-5 my-10 mx-md-0 my-md-0">
-          <img
-            class="avatar"
-            src="@/assets/images/avatar-6.png"
-            alt="avatar"
-          >
+          <NuxtImg preset="avatar" class="avatar" src="/avatar-6.png" alt="avatar" densities="x1 x2" />
           <h1 class="text-neutral-0 fw-bold">
             Hello，Jessica
           </h1>
@@ -69,15 +67,15 @@
     </section>
 
     <picture>
-      <source
-        srcset="@/assets/images/deco-line-group-horizontal-full.svg"
+      <NuxtSource
+        src="/deco-line-group-horizontal-full.svg"
         media="(min-width:576px)"
-      >
-      <img
+      />
+      <NuxtImg
         class="w-100"
-        src="@/assets/images/deco-line-group-horizontal-sm.svg"
+        src="/deco-line-group-horizontal-sm.svg"
         alt="deco-line-group"
-      >
+      />
     </picture>
   </main>
   <AppFooter />

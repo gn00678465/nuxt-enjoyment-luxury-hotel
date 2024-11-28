@@ -4,7 +4,7 @@ import MdiArrowRight from '~icons/mdi/arrow-right';
 import IcBaselineDirectionsCar from '~icons/ic/baseline-directions-car';
 import IcBaselineTrain from '~icons/ic/baseline-train';
 import MdiCarSide from '~icons/mdi/car-side';
-import type { PictureOptions, CarouselInst } from '~/components/Carousel.vue';
+import type { PictureOptions, CarouselInst, CarouselImgs } from '~/components/Carousel.vue';
 
 definePageMeta({
   layout: 'front-layout',
@@ -14,21 +14,37 @@ definePageMeta({
   }
 })
 
+useSeoMeta({
+  title: '享樂酒店',
+  description: '高雄豪華住宿之選，我們致力於為您提供無與倫比的奢華體驗與優質服務。'
+})
+
 const roomSwiper = ref<CarouselInst>()
 
-const heroImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
-    src: '_nuxt/assets/images/home-hero-sm.png',
-    alt: 'hero banner',
+const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
+    src: '/home-hero.png',
+    srcset: '',
+    format: 'png',
+    fit: 'cover',
     style: {
       width: '100%',
       height: '100%',
-      'object-fit': 'cover',
       filter: 'brightness(40%)'
     },
     sources: [
       {
-        srcset: '_nuxt/assets/images/home-hero.png',
-        media: '(min-width:576px)'
+        src: '/home-hero-sm.png',
+        media: '(orientation: portrait)',
+        modifiers: {
+          format: 'png'
+        }
+      },
+      {
+        src: '/home-hero.png',
+        media: '(orientation: landscape)',
+        modifiers: {
+          format: 'png'
+        }
       }
     ]
   })))
@@ -61,7 +77,7 @@ const slideNext = () => {
   <main class="overflow-hidden">
     <section class="hero position-relative">
 
-      <Carousel :aspect-ratio="{ xs: '375/812', md: '16 / 9' }" :images="heroImages"></Carousel>
+      <Carousel :aspect-ratio="{ xs: '375/812', md: '16 / 9' }" :imgs="heroImgs"></Carousel>
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row justify-content-md-between gap-md-10 w-100 px-md-20 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">

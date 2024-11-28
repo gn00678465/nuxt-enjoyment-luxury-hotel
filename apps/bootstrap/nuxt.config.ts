@@ -4,7 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/image',
-    '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
     '@nuxt/eslint',
@@ -18,6 +17,15 @@ export default defineNuxtConfig({
     'nuxt-viewport',
     '@samk-dev/nuxt-vcalendar'
   ],
+  extends: [
+    'assets'
+  ],
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+    }
+  },
   css: ['@/assets/scss/main.scss'],
   googleFonts: {
     families: {
@@ -32,7 +40,32 @@ export default defineNuxtConfig({
     },
   },
   image: {
+    format: ['webp', 'png'],
     dir: 'assets/images',
+    screens: {
+      xs: 0,
+      sm: 576,
+      md: 768,
+      lg: 992,
+      xl: 1200,
+      xxl: 1400,
+      xxxl: 1537
+    },
+    presets: {
+      avatar: {
+        modifiers: {
+          format: 'png',
+          width: 144,
+          height: 144
+        }
+      }
+    },
+  },
+  icon: {
+    serverBundle: {
+      externalizeIconsJson: true,
+      collections: ['bi', 'mdi', 'ic', 'fluent']
+    }
   },
   viewport: {
     breakpoints: {
