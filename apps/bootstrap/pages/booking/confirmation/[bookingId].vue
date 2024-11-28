@@ -93,11 +93,12 @@ const { bookingId } = route.params;
               </h2>
             </div>
 
-            <img
+            <NuxtImg
               class="img-fluid rounded-3"
-              src="@/assets/images/room-a-1.png"
+              src="/images/room-a-1.png"
               alt="room-a"
-            >
+              format="png"
+            />
 
             <section class="d-flex flex-column gap-6">
               <h3 class="d-flex align-items-center mb-6 text-neutral-80 fs-8 fs-md-6 fw-bold">

@@ -85,24 +85,24 @@ import MaterialSymbolsCloseRounded from '~icons/material-symbols/close-rounded';
       </nav>
     </header>
     <div class="position-relative d-flex flex-column flex-md-row">
-      <img
+      <NuxtImg
         class="d-none d-md-block position-relative z-1 min-vh-100 object-fit-cover"
         style="max-width: 50%;"
-        src="@/assets/images/login-hero.png"
+        src="/images/login-hero.png"
         alt="login-hero"
-      >
+      />
 
       <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1 pt-18 pt-md-0">
         <picture class="w-100">
-          <source
-            srcset="@/assets/images/deco-line-group-horizontal.svg"
+          <NuxtSource
+            src="/images/deco-line-group-horizontal.svg"
             media="(min-width: 576px)"
-          >
-          <img
+          />
+          <NuxtImg
             class="deco-line-group"
-            src="@/assets/images/deco-line-group-horizontal-sm.svg"
+            src="/images/deco-line-group-horizontal-sm.svg"
             alt="deco-line-group"
-          >
+          />
         </picture>
         
         <main class="position-relative w-100 w-md-auto">

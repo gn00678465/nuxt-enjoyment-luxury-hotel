@@ -64,39 +64,44 @@ const handleDateChange = (bookingInfo) => {
       >
         <div class="d-flex gap-2 rounded-3xl overflow-hidden">
           <div style="width: 52.5vw;">
-            <img
+            <NuxtImg
               class="w-100"
-              src="@/assets/images/room-a-1.png"
+              src="/images/room-a-1.png"
               alt="room-a-1"
-            >
+              format="png"
+            />
           </div>
           <div
             class="d-flex flex-wrap gap-md-2"
             style="width: 42.5vw;"
           >
             <div class="d-flex gap-md-2">
-              <img
+              <NuxtImg
                 class="w-50"
-                src="@/assets/images/room-a-2.png"
+                src="/images/room-a-2.png"
                 alt="room-a-2"
-              >
-              <img
+                format="png"
+              />
+              <NuxtImg
                 class="w-50"
-                src="@/assets/images/room-a-3.png"
+                src="/images/room-a-3.png"
                 alt="room-a-3"
-              >
+                format="png"
+                />
             </div>
             <div class="d-flex gap-md-2">
-              <img
+              <NuxtImg
                 class="w-50"
-                src="@/assets/images/room-a-4.png"
+                src="/images/room-a-4.png"
                 alt="room-a-4"
-              >
-              <img
+                format="png"
+                />
+              <NuxtImg
                 class="w-50"
-                src="@/assets/images/room-a-5.png"
+                src="/images/room-a-5.png"
                 alt="room-a-5"
-              >
+                format="png"
+              />
             </div>
           </div>
         </div>
@@ -109,11 +114,12 @@ const handleDateChange = (bookingInfo) => {
         </button>
       </div>
       <div class="d-md-none position-relative">
-        <img
+        <NuxtImg
           class="img-fluid"
-          src="@/assets/images/room-a-1.png"
+          src="/images/room-a-1.png"
           alt="room-a-1"
-        >
+          format="png"
+        />
         <button
           class="position-absolute btn btn-primary-10 px-8 py-4 text-primary-100 border-primary-100 fw-bold rounded-3"
           style="bottom: 23px; right: 12px;"

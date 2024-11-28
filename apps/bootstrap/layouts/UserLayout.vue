@@ -7,21 +7,21 @@
     <section class="position-relative">
       <picture>
         <NuxtSource
-          src="/profile-hero.png"
+          src="/images/profile-hero.png"
           media="(min-width: 576px)"
           :modifiers="{ format: 'png' }"
         />
         <NuxtImg
           class="w-100"
           style="height: 384px;"
-          src="/profile-hero-sm.png"
+          src="/images/profile-hero-sm.png"
           alt="profile-hero"
           fit="cover"
         />
       </picture>
       <div class="container">
         <div class="hero-content d-flex flex-column flex-md-row justify-content-center justify-content-md-start align-items-md-center gap-4 gap-md-6 mx-5 my-10 mx-md-0 my-md-0">
-          <NuxtImg preset="avatar" class="avatar" src="/avatar-6.png" alt="avatar" densities="x1 x2" />
+          <NuxtImg preset="avatar" class="avatar" src="/images/avatar-6.png" alt="avatar" densities="x1 x2" />
           <h1 class="text-neutral-0 fw-bold">
             Hello，Jessica
           </h1>
@@ -68,12 +68,12 @@
 
     <picture>
       <NuxtSource
-        src="/deco-line-group-horizontal-full.svg"
+        src="/images/deco-line-group-horizontal-full.svg"
         media="(min-width:576px)"
       />
       <NuxtImg
         class="w-100"
-        src="/deco-line-group-horizontal-sm.svg"
+        src="/images/deco-line-group-horizontal-sm.svg"
         alt="deco-line-group"
       />
     </picture>

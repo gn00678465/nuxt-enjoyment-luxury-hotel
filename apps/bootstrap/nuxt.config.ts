@@ -1,3 +1,5 @@
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
@@ -5,7 +7,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@vueuse/nuxt',
-    '@nuxtjs/i18n',
     '@nuxt/eslint',
     '@nuxtjs/sitemap',
     'nuxt-xstate',
@@ -13,7 +14,13 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     'nuxt-swiper',
     '@vee-validate/nuxt',
-    'unplugin-icons/nuxt',
+    ['unplugin-icons/nuxt', {
+      compiler: 'vue3',
+      autoInstall: true,
+      customCollections: {
+        custom: FileSystemIconLoader('./assets/svgs'),
+      },
+    }],
     'nuxt-viewport',
     '@samk-dev/nuxt-vcalendar'
   ],
@@ -41,7 +48,6 @@ export default defineNuxtConfig({
   },
   image: {
     format: ['webp', 'png'],
-    dir: 'assets/images',
     screens: {
       xs: 0,
       sm: 576,

@@ -3,7 +3,7 @@ import FluentSlideSize24Filled from '~icons/fluent/slide-size-24-filled';
 import MdiArrowRight from '~icons/mdi/arrow-right';
 import IcBaselinePerson from '~icons/ic/baseline-person';
 import MaterialSymbolsKingBed from '~icons/material-symbols/king-bed';
-import type { PictureOptions} from '~/components/Carousel.vue';
+import type { CarouselImgs } from '~/components/Carousel.vue';
 
 const emits = defineEmits<{
   click: []
@@ -41,7 +41,7 @@ export interface RoomCardProps {
   title: string
   description?: string
   price: number
-  images?: PictureOptions[]
+  images?: CarouselImgs
   info?: RoomInfo
 }
 
@@ -50,7 +50,7 @@ export interface RoomCardProps {
 <template>
   <div class="row overflow-hidden">
     <div class="col-12 col-lg-7">
-      <Carousel :images="images" :options="{ navigation: true, autoplay: false }"></Carousel>
+      <Carousel :imgs="images" :options="{ navigation: true, autoplay: false }"></Carousel>
     </div>
     <div class="col-12 col-lg-5">
       <div class="card-body pe-md-10 py-md-10">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PictureOptions } from '~/components/Carousel.vue';
+import type { CarouselImgs } from '~/components/Carousel.vue';
 import type { RoomCardProps } from '~/components/RoomCard.vue';
 
 definePageMeta({
@@ -16,22 +16,32 @@ function goToRoomDetail(id?: string) {
   router.push({ name: 'room-detail', params: { roomId: id } })
 }
 
-const heroImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
-    src: '_nuxt/assets/images/home-hero-sm.png',
-    alt: 'hero banner',
-    style: {
-      width: '100%',
-      height: '100%',
-      'object-fit': 'cover',
-      filter: 'brightness(40%)'
-    },
-    sources: [
-      {
-        srcset: '_nuxt/assets/images/home-hero.png',
-        media: '(min-width:576px)'
+const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
+  src: '/images/home-hero.png',
+  srcset: '',
+  format: 'png',
+  fit: 'cover',
+  style: {
+    width: '100%',
+    filter: 'brightness(40%)'
+  },
+  sources: [
+    {
+      src: '/images/home-hero-sm.png',
+      media: '(orientation: portrait)',
+      modifiers: {
+        format: 'png'
       }
-    ]
-  })))
+    },
+    {
+      src: '/images/home-hero.png',
+      media: '(orientation: landscape)',
+      modifiers: {
+        format: 'png'
+      }
+    }
+  ]
+})))
 
 const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
   {
@@ -45,15 +55,16 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
     },
     images: [1,2,3,4,5].map((num) => {
       return {
-        src: `_nuxt/assets/images/room-a-sm-${num}.png`,
-        style: {
-          'object-fit': 'cover',
-        },
+        src: `/images/room-a-sm-${num}.png`,
+        srcset: '',
+        format: 'png',
+        fit: 'cover',
         sources: [
           {
-            srcset: `_nuxt/assets/images/room-a-${num}.png`,
-            media: '(min-width:576px)'
-          }
+            src: `/images/room-a-${num}.png`,
+            media: '(min-width:576px)',
+            modifiers: { format: 'png' }
+          },
         ]
       }
     }),
@@ -70,14 +81,15 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
     },
     images: [1,2,3,4,5].map((num) => {
       return {
-        src: `_nuxt/assets/images/room-b-sm-${num}.png`,
-        style: {
-          'object-fit': 'cover',
-        },
+        src: `/images/room-b-sm-${num}.png`,
+        srcset: '',
+        format: 'png',
+        fit: 'cover',
         sources: [
           {
-            srcset: `_nuxt/assets/images/room-b-${num}.png`,
-            media: '(min-width:576px)'
+            src: `/images/room-b-${num}.png`,
+            media: '(min-width:576px)',
+            modifiers: { format: 'png' }
           }
         ]
       }
@@ -95,14 +107,15 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
     },
     images: [1,2,3,4,5].map((num) => {
       return {
-        src: `_nuxt/assets/images/room-c-sm-${num}.png`,
-        style: {
-          'object-fit': 'cover',
-        },
+        src: `/images/room-c-sm-${num}.png`,
+        srcset: '',
+        format: 'png',
+        fit: 'cover',
         sources: [
           {
-            srcset: `_nuxt/assets/images/room-c-${num}.png`,
-            media: '(min-width:576px)'
+            src: `/images/room-c-${num}.png`,
+            media: '(min-width:576px)',
+            modifiers: { format: 'png' }
           }
         ]
       }
@@ -120,14 +133,15 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
     },
     images: [1,2,3,4,5].map((num) => {
       return {
-        src: `_nuxt/assets/images/room-d-sm-${num}.png`,
-        style: {
-          'object-fit': 'cover',
-        },
+        src: `/images/room-d-sm-${num}.png`,
+        srcset: '',
+        format: 'png',
+        fit: 'cover',
         sources: [
           {
-            srcset: `_nuxt/assets/images/room-d-${num}.png`,
-            media: '(min-width:576px)'
+            src: `/images/room-d-${num}.png`,
+            media: '(min-width:576px)',
+            modifiers: { format: 'png' }
           }
         ]
       }
@@ -142,7 +156,7 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
   <main>
     <section class="hero position-relative">
 
-      <Carousel :aspect-ratio="{ xs: '375/466', lg: '1920 / 800' }" :images="heroImages"></Carousel>
+      <Carousel :aspect-ratio="{ xs: '375/466', lg: '1920 / 800' }" :imgs="heroImgs"></Carousel>
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row gap-10 gap-md-20 w-100 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">

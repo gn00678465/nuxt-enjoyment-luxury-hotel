@@ -4,7 +4,7 @@ import MdiArrowRight from '~icons/mdi/arrow-right';
 import IcBaselineDirectionsCar from '~icons/ic/baseline-directions-car';
 import IcBaselineTrain from '~icons/ic/baseline-train';
 import MdiCarSide from '~icons/mdi/car-side';
-import type { PictureOptions, CarouselInst, CarouselImgs } from '~/components/Carousel.vue';
+import type { CarouselInst, CarouselImgs } from '~/components/Carousel.vue';
 
 definePageMeta({
   layout: 'front-layout',
@@ -22,7 +22,7 @@ useSeoMeta({
 const roomSwiper = ref<CarouselInst>()
 
 const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
-    src: '/home-hero.png',
+    src: '/images/home-hero.png',
     srcset: '',
     format: 'png',
     fit: 'cover',
@@ -33,14 +33,14 @@ const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
     },
     sources: [
       {
-        src: '/home-hero-sm.png',
+        src: '/images/home-hero-sm.png',
         media: '(orientation: portrait)',
         modifiers: {
           format: 'png'
         }
       },
       {
-        src: '/home-hero.png',
+        src: '/images/home-hero.png',
         media: '(orientation: landscape)',
         modifiers: {
           format: 'png'
@@ -49,19 +49,33 @@ const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
     ]
   })))
 
-const heroRoomImages = computed<PictureOptions[]>(() => [...new Array(5)].map(() => ({
-  src: '_nuxt/assets/images/home-room-sm-1.png',
-  alt: 'hero banner',
-  style: {
-    width: '100%'
-  },
-  sources: [
-    {
-      srcset: '_nuxt/assets/images/home-room-1.png',
-      media: '(min-width:576px)'
-    }
-  ]
-})))
+const heroRoomImages = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
+    src: '/images/home-room-1.png',
+    srcset: '',
+    format: 'png',
+    fit: 'cover',
+    style: {
+      width: '100%',
+      height: '100%',
+      filter: 'brightness(40%)'
+    },
+    sources: [
+      {
+        src: '/images/home-room-sm-1.png',
+        media: '(orientation: portrait)',
+        modifiers: {
+          format: 'png'
+        }
+      },
+      {
+        src: '/images/home-room-1.png',
+        media: '(orientation: landscape)',
+        modifiers: {
+          format: 'png'
+        }
+      }
+    ]
+  })))
 
 const slidePrev = () => {
   roomSwiper.value?.prev()
@@ -239,7 +253,7 @@ const slideNext = () => {
     <section class="room-intro position-relative px-3 py-20 px-md-0 py-md-30 bg-neutral-120">
       <div class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-md-start align-items-md-end gap-6 gap-md-20">
 
-        <Carousel ref="roomSwiper" class="w-50" :images="heroRoomImages" :aspect-ratio="{ xs: '351/300', lg: '1/1' }"></Carousel>
+        <Carousel ref="roomSwiper" class="w-50" :imgs="heroRoomImages" :aspect-ratio="{ xs: '351/300', lg: '1/1' }"></Carousel>
 
         <div class="room-intro-content text-neutral-0 flex-grow-1">
           <h2 class="mb-2 mb-md-4 fw-bold">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CSSProperties, PropType } from 'vue';
 import type { SwiperOptions} from 'swiper/types';
-import type { SourceHTMLAttributes, ImgHTMLAttributes } from 'vue';
 import type { ImageModifiers } from '@nuxt/image'
 import type { NuxtSourceProps } from './NuxtSource.vue'
 
@@ -17,16 +16,12 @@ const props = defineProps({
     type: Object as PropType<SwiperOptions>,
     default: () => ({})
   },
-  images: {
-    type: Array as PropType<PictureOptions[]>,
-    default: () => []
-  },
   imgs: {
     type: Array as PropType<ImageOptions[]>,
     default: () => []
   }
 })
-const { aspectRatio, options, images, imgs } = toRefs(props)
+const { aspectRatio, options, imgs } = toRefs(props)
 
 const viewport = useViewport()
 
@@ -166,10 +161,6 @@ defineExpose<CarouselInst>({
 </script>
 
 <script lang="ts">
-export type PictureOptions = ImgHTMLAttributes & {
-  sources?: SourceHTMLAttributes[]
-}
-
 export type ImageOptions = Partial<ImageModifiers> & {
   src: string
   alt?: string
@@ -192,18 +183,6 @@ export type CarouselInst = {
 <template>
   <ClientOnly>
     <swiper-container ref="containerRef" v-bind="attrs" :init="false" :style="{ 'aspect-ratio': aspectRatioContent }" >
-      <!-- <swiper-slide v-for="(img, idx) of images" :key="idx">
-        <picture>
-          <source
-            v-for="(sour, idx) of img.sources" :key="idx"
-            :srcset="sour.srcset"
-            :media="sour.media"
-          >
-          <img
-            v-bind="img"
-          >
-        </picture>
-      </swiper-slide> -->
       <swiper-slide v-for="(img, idx) of imgs" :key="idx">
         <picture>
           <NuxtSource

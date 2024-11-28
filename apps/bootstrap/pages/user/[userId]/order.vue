@@ -28,11 +28,12 @@ const roomId = 'a';  // for navigation demo
           </h2>
         </div>
 
-        <img
+        <NuxtImg
           class="img-fluid rounded-3"
-          src="@/assets/images/room-a-1.png"
+          src="/images/room-a-1.png"
           alt="room-a"
-        >
+          format="png"
+        />
 
         <section class="d-flex flex-column gap-6">
           <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
@@ -276,12 +277,13 @@ const roomId = 'a';  // for navigation demo
         </h2>
 
         <div class="d-flex flex-column flex-lg-row gap-6">
-          <img
+          <NuxtImg
             class="img-fluid object-fit-cover rounded-3"
             style="max-width: 120px; height: 80px;"
-            src="@/assets/images/room-b-sm-1.png"
+            src="/images/room-b-sm-1.png"
             alt="room-a"
-          >
+            format="png"
+          />
           <section class="d-flex flex-column gap-4">
             <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
               預訂參考編號： HH2302183151222
@@ -319,12 +321,13 @@ const roomId = 'a';  // for navigation demo
         <hr class="my-0 opacity-100 text-neutral-40">
 
         <div class="d-flex flex-column flex-lg-row gap-6">
-          <img
+          <NuxtImg
             class="img-fluid object-fit-cover rounded-3"
             style="max-width: 120px; height: 80px;"
-            src="@/assets/images/room-b-sm-1.png"
+            src="/images/room-b-sm-1.png"
             alt="room-a"
-          >
+            format="png"
+          />
           <section class="d-flex flex-column gap-4">
             <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
               預訂參考編號： HH2302183151222
@@ -362,12 +365,13 @@ const roomId = 'a';  // for navigation demo
         <hr class="my-0 opacity-100 text-neutral-40">
 
         <div class="d-flex flex-column flex-lg-row gap-6">
-          <img
+          <NuxtImg
             class="img-fluid object-fit-cover rounded-3"
             style="max-width: 120px; height: 80px;"
-            src="@/assets/images/room-b-sm-1.png"
+            src="/images/room-b-sm-1.png"
             alt="room-a"
-          >
+            format="png"
+          />
           <section class="d-flex flex-column gap-4">
             <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
               預訂參考編號： HH2302183151222
