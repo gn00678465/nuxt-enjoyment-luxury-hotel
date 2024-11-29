@@ -22,7 +22,8 @@ export default defineNuxtConfig({
       },
     }],
     'nuxt-viewport',
-    '@samk-dev/nuxt-vcalendar'
+    '@samk-dev/nuxt-vcalendar',
+    '@pinia/nuxt'
   ],
   extends: [
     'assets'
