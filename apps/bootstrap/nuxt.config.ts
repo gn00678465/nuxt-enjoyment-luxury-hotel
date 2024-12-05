@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/eslint',
     '@nuxtjs/sitemap',
-    'nuxt-xstate',
     '@nuxtjs/google-fonts',
     '@nuxt/icon',
     'nuxt-swiper',
@@ -19,15 +18,26 @@ export default defineNuxtConfig({
       autoInstall: true,
       customCollections: {
         custom: FileSystemIconLoader('./assets/svgs'),
+        prefix: 'icons',
       },
     }],
     'nuxt-viewport',
-    '@samk-dev/nuxt-vcalendar',
-    '@pinia/nuxt'
+    ['@pinia/nuxt', {
+      autoImports: ["defineStore", "acceptHMRUpdate"],
+    }],
+    '@unocss/nuxt',
   ],
   extends: [
     'assets'
   ],
+  runtimeConfig: {
+    public: {
+      API_URL: 'http://localhost:3005'
+    }
+  },
+  imports: {
+    dirs: ['stores']
+  },
   app: {
     head: {
       charset: 'utf-8',

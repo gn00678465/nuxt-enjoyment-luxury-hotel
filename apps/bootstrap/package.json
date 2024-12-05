@@ -12,13 +12,20 @@
   "dependencies": {
     "@nuxt/image": "^1.8.1",
     "@nuxt/image-edge": "latest",
+    "@popperjs/core": "^2.11.8",
+    "@vee-validate/zod": "^4.14.7",
+    "@xstate/vue": "^4.0.0",
     "aos": "^2.3.4",
     "bootstrap": "^5.3.3",
+    "date-fns": "^4.1.0",
     "nuxt": "^3.14.1592",
     "pinia": "^2.2.7",
     "swiper": "^11.1.15",
+    "v-calendar": "^3.1.2",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "xstate": "^5.19.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@iconify-json/bi": "^1.2.1",
@@ -32,14 +39,14 @@
     "@nuxtjs/i18n": "^9.1.0",
     "@nuxtjs/sitemap": "^6.1.5",
     "@pinia/nuxt": "^0.8.0",
-    "@samk-dev/nuxt-vcalendar": "^1.0.4",
     "@types/bootstrap": "^5.2.10",
+    "@unocss/nuxt": "^0.65.1",
     "@vee-validate/nuxt": "^4.14.7",
     "@vueuse/nuxt": "^11.3.0",
     "nuxt-swiper": "^2.0.0",
     "nuxt-viewport": "^2.2.0",
-    "nuxt-xstate": "^0.6.2",
     "sass": "^1.77.6",
+    "unocss": "0.65.0-beta.3",
     "unplugin-icons": "^0.20.2"
   }
 }

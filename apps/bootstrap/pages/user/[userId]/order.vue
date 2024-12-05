@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
 
+defineOptions({
+  name: 'UserOrder'
+})
+
 definePageMeta({
   layout: 'user-layout',
   name: 'user-order',
   meta: {
     title: '訂單列表'
+  },
+  props: true,
+})
+
+const props = defineProps({
+  userId: {
+    type: String,
+    required: true
   }
 })
+const { userId } = toRefs(props)
 
 const roomId = 'a';  // for navigation demo
 </script>

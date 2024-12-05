@@ -50,7 +50,7 @@ export interface RoomCardProps {
 <template>
   <div class="row overflow-hidden">
     <div class="col-12 col-lg-7">
-      <Carousel :imgs="images" :options="{ navigation: true, autoplay: false }"></Carousel>
+      <Carousel :imgs="images" :options="{ navigation: true, autoplay: false }" class="w-100 h-100" />
     </div>
     <div class="col-12 col-lg-5">
       <div class="card-body pe-md-10 py-md-10">

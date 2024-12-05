@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import * as zod from 'zod'
+import { postLogin } from '~/api/auth'
+
 definePageMeta({
   name: 'login',
   layout: 'account-layout',
@@ -6,6 +10,45 @@ definePageMeta({
     title:'會員登入'
   }
 })
+
+const authStore = useAuthStore()
+
+// hooks
+const router = useRouter()
+const emailId = useId()
+const passwordId = useId()
+
+/**
+ * auth form
+ */
+ const validationAuthSchema = toTypedSchema(
+  zod.object({
+    email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
+    password: zod.string().min(1, { message: 'This is required' }),
+    rememberMe: zod.boolean()
+  })
+)
+const { handleSubmit, errors, isSubmitting, meta } = useForm({
+  initialValues: {
+    email: '',
+    password: '',
+    rememberMe: false
+  },
+  validationSchema: validationAuthSchema,
+  validateOnMount: false
+})
+const { value: email } = useField('email')
+const { value: password } = useField('password')
+const { value: rememberMe } = useField('rememberMe')
+
+const onSubmit = handleSubmit(async (values) => {
+  const { rememberMe, ...data } = values
+  const res = await postLogin({ body: data })
+  authStore.setToken(res.token)
+  authStore.setUserData(res.result)
+  router.push({ name: 'user-profile', params: { userId: res.result._id }})
+})
+
 </script>
 
 <template>
@@ -19,18 +62,18 @@ definePageMeta({
       </h1>
     </div>
 
-    <form class="mb-10">
+    <form class="mb-10" @submit.prevent="onSubmit">
       <div class="mb-4 fs-8 fs-md-7">
         <label
           class="mb-2 text-neutral-0 fw-bold"
-          for="email"
+          :for="emailId"
         >
           電子信箱
         </label>
         <input
-          id="email"
+          v-model="email"
+          :id="emailId"
           class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-          value="jessica@sample.com"
           placeholder="請輸入信箱"
           type="email"
         >
@@ -38,14 +81,14 @@ definePageMeta({
       <div class="mb-4 fs-8 fs-md-7">
         <label
           class="mb-2 text-neutral-0 fw-bold"
-          for="password"
+          :for="passwordId"
         >
           密碼
         </label>
         <input
-          id="password"
+          v-model="password"
+          :id="passwordId"
           class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-          value="jessica@sample.com"
           placeholder="請輸入密碼"
           type="password"
         >
@@ -53,6 +96,7 @@ definePageMeta({
       <div class="d-flex justify-content-between align-items-center mb-10 fs-8 fs-md-7">
         <div class="form-check d-flex align-items-end gap-2 text-neutral-0">
           <input
+            v-model="rememberMe"
             id="remember"
             class="form-check-input"
             type="checkbox"
@@ -74,7 +118,8 @@ definePageMeta({
       </div>
       <button
         class="btn btn-primary-100 w-100 py-4 text-neutral-0 fw-bold"
-        type="button"
+        type="submit"
+        :disabled="isSubmitting"
       >
         會員登入
       </button>

@@ -59,6 +59,10 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
         srcset: '',
         format: 'png',
         fit: 'cover',
+        style: {
+          width: '100%',
+          height: '100%'
+        },
         sources: [
           {
             src: `/images/room-a-${num}.png`,
@@ -85,6 +89,10 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
         srcset: '',
         format: 'png',
         fit: 'cover',
+        style: {
+          width: '100%',
+          height: '100%'
+        },
         sources: [
           {
             src: `/images/room-b-${num}.png`,
@@ -111,6 +119,10 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
         srcset: '',
         format: 'png',
         fit: 'cover',
+        style: {
+          width: '100%',
+          height: '100%'
+        },
         sources: [
           {
             src: `/images/room-c-${num}.png`,
@@ -137,6 +149,10 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
         srcset: '',
         format: 'png',
         fit: 'cover',
+        style: {
+          width: '100%',
+          height: '100%'
+        },
         sources: [
           {
             src: `/images/room-d-${num}.png`,

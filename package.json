@@ -1,10 +1,11 @@
 {
-  "name": "@nuxt-enjoyment-luxury-hotel/unocss-preset",
+  "name": "nuxt-enjoyment-luxury-hotel",
   "private": true,
   "type": "module",
   "scripts": {
     "dev:unocss": "pnpm --filter @nuxt-enjoyment-luxury-hotel/unocss dev",
-    "dev:bootstrap": "pnpm --filter @nuxt-enjoyment-luxury-hotel/bootstrap dev"
+    "dev:bootstrap": "pnpm --filter @nuxt-enjoyment-luxury-hotel/bootstrap dev",
+    "dev:server": "pnpm --filter freyja dev"
   },
   "devDependencies": {
     "vite": "^5.4.11"

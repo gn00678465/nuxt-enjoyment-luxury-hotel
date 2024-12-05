@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import IcBaselineMinus from '~icons/ic/baseline-minus';
 import IcBaselinePlus from '~icons/ic/baseline-plus';
-import 'v-calendar/style.css';
 import type { Modal } from "bootstrap";
 
 const modalRef = ref<HTMLDivElement>()
@@ -255,22 +254,20 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
             v-if="!isConfirmDateOnMobile"
             class="date-picker"
           >
-            <ClientOnly>
-              <VDatePicker
-                :key="tempDate.key"
-                v-model.range.string="tempDate.date"
-                color="primary"
-                :masks="masks"
-                :first-day-of-week="1"
-                :min-date="tempDate.minDate"
-                :max-date="tempDate.maxDate"
-                :rows="rows"
-                :columns="columns"
-                :expanded="expanded"
-                :title-position="titlePosition"
-                class="border-0"
-              />
-            </ClientOnly>
+          <VDatePicker
+            :key="tempDate.key"
+            v-model.range.string="tempDate.date"
+            color="primary"
+            :masks="masks"
+            :first-day-of-week="1"
+            :min-date="tempDate.minDate"
+            :max-date="tempDate.maxDate"
+            :rows="rows"
+            :columns="columns"
+            :expanded="expanded"
+            :title-position="titlePosition"
+            class="border-0"
+          />
           </div>
 
           <div v-else>

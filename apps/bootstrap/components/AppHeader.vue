@@ -7,8 +7,10 @@ const route = useRoute();
 const router = useRouter()
 const transparentBgRoute = ['home', 'rooms'];
 
-const isTransparentRoute = computed(() => transparentBgRoute.includes(route.name));
+const { token, userData } = storeToRefs(useAuthStore())
+const { logout } = useAuthStore()
 
+const isTransparentRoute = computed(() => transparentBgRoute.includes(route.name));
 
 const isScrolled = ref(false);
 
@@ -17,7 +19,7 @@ const handleScroll = () => {
 }
 
 function onLogout() {
-  router.push({ name: 'login' })
+  logout()
 }
 
 onMounted(() => {
@@ -81,7 +83,7 @@ onUnmounted(() => {
                 客房旅宿
               </NuxtLink>
             </li>
-            <li class="d-none d-md-block nav-item">
+            <li v-if="token" class="nav-item">
               <div class="btn-group">
                 <button
                   type="button"
@@ -91,7 +93,7 @@ onUnmounted(() => {
                   <MdiAccountCircleOutline 
                     class="fs-5"
                   />
-                  Jessica
+                  {{ userData?.name }}
                 </button>
                 <ul
                   class="dropdown-menu py-3 overflow-hidden"
@@ -113,7 +115,7 @@ onUnmounted(() => {
                 </ul>
               </div>
             </li>
-            <li class="d-md-none nav-item">
+            <li v-else class="nav-item">
               <NuxtLink
                 :to="{ name: 'login' }"
                 class="nav-link p-4 text-neutral-0"

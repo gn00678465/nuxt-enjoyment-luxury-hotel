@@ -1,14 +1,96 @@
 <script setup lang="ts">
+import { fetchUserData, putUserData } from '~/api';
+import { parseISO } from 'date-fns'
+import { toTypedSchema } from '@vee-validate/zod';
+import * as zod from 'zod';
+import { editMachine } from '~/machines/edit-machine'
+import { useMachine } from '@xstate/vue'
+
+defineOptions({
+  name: 'UserProfile'
+})
+
 definePageMeta({
   layout: 'user-layout',
   name: 'user-profile',
   meta: {
     title: '個人資料'
-  }
+  },
+  props: true,
 })
 
-const isEditPassword = ref(false);
-const isEditProfile = ref(false);
+const props = defineProps({
+  userId: {
+    type: String,
+    required: true
+  }
+})
+const { userId } = toRefs(props)
+
+const { token, userData } = storeToRefs(useAuthStore())
+const { setUserData } = useAuthStore()
+const { data, status, error, refresh, clear } = await useAsyncData(
+  'user-profile',
+  async () => {
+    const res = await fetchUserData({ headers: { Authorization: `Bearer ${token.value!}` } })
+    const birthday = parseISO(res.result.birthday)
+    
+    return { ...res.result, birthday: [birthday.getFullYear(), birthday.getMonth() + 1, birthday.getDate()] }
+  }
+)
+
+/**
+ * 更新密碼
+ */
+const { handleSubmit: handleAuthSubmit, isSubmitting: isAuthSubmitting, defineField: defineAuthField, errors: authErrors } = useForm({
+  initialValues: {
+    oldPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  },
+  validationSchema: toTypedSchema(
+    zod.object({
+      oldPassword: zod.string().min(1, { message: 'This is required' }),
+      newPassword: zod.string().min(1, { message: 'This is required' }),
+      confirmNewPassword: zod.string().min(1, { message: 'This is required' })
+    }).refine((data) => data.newPassword === data.confirmNewPassword, {
+      message: '兩次密碼輸入不一致',
+      path: ['confirmNewPassword']
+    })
+  ),
+  validateOnMount: false
+})
+const [oldPassword] = defineAuthField('oldPassword')
+const [newPassword] = defineAuthField('newPassword')
+const [confirmNewPassword] = defineAuthField('confirmNewPassword')
+
+const { snapshot: authSnapshot, send: authSend } = useMachine(editMachine)
+
+const onAuthSubmit = handleAuthSubmit(async(values) => {
+  const { confirmNewPassword, ...data } = values
+  await putUserData({ 
+    headers: { Authorization: `Bearer ${token.value!}` },
+    body: { userId: userId.value, ...data } })
+})
+
+const isPasswdEdit = computed(() => authSnapshot.value.context.isEdit)
+
+/**
+ * 更新資本資料
+ */
+const { values, defineField: defineInfoField, handleSubmit: handleBasicSubmit } = useForm({
+  initialValues: data.value
+})
+const [name] = defineInfoField('name')
+const [phone] = defineInfoField('phone')
+const [birthday] = defineInfoField('birthday')
+const [city] = defineInfoField('address.city')
+const [county] = defineInfoField('address.county')
+const [detail] = defineInfoField('address.detail')
+
+const { snapshot: basicSnapshot, send: basicSend } = useMachine(editMachine)
+
+const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
 </script>
 
 <template>
@@ -18,19 +100,19 @@ const isEditProfile = ref(false);
         <h2 class="fs-6 fs-md-5 fw-bold">
           修改密碼
         </h2>
-        <div class="d-flex flex-column gap-4 gap-md-6">
+        <form class="d-flex flex-column gap-4 gap-md-6" @submit="onAuthSubmit">
           <div class="fs-8 fs-md-7">
             <p class="mb-2 text-neutral-80 fw-medium">
               電子信箱
             </p>
             <span
               class="form-control pe-none p-0 text-neutral-100 fw-bold border-0"
-            >Jessica@exsample.com</span>
+            >{{ data?.email }}</span>
           </div>
 
           <div
             class="d-flex justify-content-between align-items-center"
-            :class="{'d-none': isEditPassword}"
+            :class="{'d-none': isPasswdEdit}"
           >
             <div>
               <label class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
@@ -46,7 +128,7 @@ const isEditProfile = ref(false);
             <button
               class="flex-shrink-0 text-primary-100 fs-8 fs-md-7 fw-bold text-decoration-underline border-0 bg-transparent"
               type="button"
-              @click="isEditPassword = !isEditPassword"
+              @click="authSend({ type: 'EDIT' })"
             >
               重設
             </button>
@@ -54,7 +136,7 @@ const isEditProfile = ref(false);
 
           <div
             class="d-flex flex-column gap-4 gap-md-6"
-            :class="{'d-none': !isEditPassword}"
+            :class="{'d-none': !isPasswdEdit}"
           >
             <div>
               <label
@@ -62,6 +144,7 @@ const isEditProfile = ref(false);
                 class="form-label fs-8 fs-md-7 fw-bold"
               >舊密碼</label>
               <input
+                v-model="oldPassword"
                 id="oldPassword"
                 type="password"
                 class="form-control p-4 fs-7 rounded-3"
@@ -75,6 +158,7 @@ const isEditProfile = ref(false);
                 class="form-label fs-8 fs-md-7 fw-bold"
               >新密碼</label>
               <input
+                v-model="newPassword"
                 id="newPassword"
                 type="password"
                 class="form-control p-4 fs-7 rounded-3"
@@ -88,6 +172,7 @@ const isEditProfile = ref(false);
                 class="form-label fs-8 fs-md-7 fw-bold"
               >確認新密碼</label>
               <input
+                v-model="confirmNewPassword"
                 id="confirmPassword"
                 type="password"
                 class="form-control p-4 fs-7 rounded-3"
@@ -97,13 +182,13 @@ const isEditProfile = ref(false);
           </div>
 
           <button
-            :class="{'d-none': !isEditPassword}"
+            :class="{'d-none': !isPasswdEdit}"
             class="btn btn-neutral-40 align-self-md-start px-8 py-4 text-neutral-60 rounded-3"
-            type="button"
+            type="submit"
           >
             儲存設定
           </button>
-        </div>
+        </form>
       </section>
     </div>
 
@@ -122,12 +207,12 @@ const isEditProfile = ref(false);
               姓名
             </label>
             <input
+              v-model="name"
               id="name"
               name="name"
               class="form-control text-neutral-100 fw-bold"
               :class="{'pe-none p-0 border-0': !isEditProfile, 'p-4': isEditProfile}"
               type="text"
-              value="Jessica Ｗang"
             >
           </div>
 
@@ -140,12 +225,12 @@ const isEditProfile = ref(false);
               手機號碼
             </label>
             <input
+              v-model="phone"
               id="phone"
               name="phone"
               class="form-control text-neutral-100 fw-bold"
               :class="{'pe-none p-0 border-0': !isEditProfile, 'p-4': isEditProfile}"
               type="tel"
-              value="+886 912 345 678"
             >
           </div>
 
@@ -160,41 +245,44 @@ const isEditProfile = ref(false);
             <span
               class="form-control pe-none p-0 text-neutral-100 fw-bold border-0"
               :class="{'d-none': isEditProfile}"
-            >1990 年 8 月 15 日</span>
+            >{{ data?.birthday[0] }} 年 {{ data?.birthday[1] }} 月 {{ data?.birthday[2] }} 日</span>
             <div
               class="d-flex gap-2"
               :class="{'d-none': !isEditProfile}"
             >
               <select
+                v-model="birthday[0]"
                 id="birth"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
                 <option
                   v-for="year in 65"
                   :key="year"
-                  value="`${year + 1958} 年`"
+                  :value="year + 1958"
                 >
                   {{ year + 1958 }} 年
                 </option>
               </select>
               <select
+                v-model="birthday[1]"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
                 <option
                   v-for="month in 12"
                   :key="month"
-                  value="`${month} 月`"
+                  :value="month"
                 >
                   {{ month }} 月
                 </option>
               </select>
               <select
+                v-model="birthday[2]"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
                 <option
                   v-for="day in 30"
                   :key="day"
-                  value="`${day} 日`"
+                  :value="day"
                 >
                   {{ day }} 日
                 </option>
@@ -213,12 +301,13 @@ const isEditProfile = ref(false);
             <span
               class="form-control pe-none p-0 text-neutral-100 fw-bold border-0"
               :class="{'d-none': isEditProfile}"
-            >高雄市新興區六角路 123 號</span>
+            >{{ `${city}${county} ${detail}` }}</span>
             <div :class="{'d-none': !isEditProfile}">
               <div
                 class="d-flex gap-2 mb-2"
               >
                 <select
+                  v-model="city"
                   class="form-select p-4 text-neutral-80 fw-medium rounded-3"
                 >
                   <option value="臺北市">
@@ -235,6 +324,7 @@ const isEditProfile = ref(false);
                   </option>
                 </select>
                 <select
+                  v-model="county"
                   class="form-select p-4 text-neutral-80 fw-medium rounded-3"
                 >
                   <option value="前金區">
@@ -252,6 +342,7 @@ const isEditProfile = ref(false);
                 </select>
               </div>
               <input
+                v-model="detail"
                 id="address"
                 type="text"
                 class="form-control p-4 rounded-3"
@@ -264,7 +355,7 @@ const isEditProfile = ref(false);
           :class="{'d-none': isEditProfile}"
           class="btn btn-outline-primary-100 align-self-start px-8 py-4 rounded-3"
           type="button"
-          @click="isEditProfile = !isEditProfile"
+          @click="basicSend({ type: 'EDIT' })"
         >
           編輯
         </button>

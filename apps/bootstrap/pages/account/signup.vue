@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
+import { toTypedSchema } from '@vee-validate/zod';
+import * as zod from 'zod';
+import { useMachine } from '@xstate/vue'
+import { registrationMachine } from '~/machines/registration-machine';
+import { getDaysInMonth, formatRFC3339 } from "date-fns"
 
 definePageMeta({
   name: 'signup',
@@ -9,7 +14,109 @@ definePageMeta({
   }
 })
 
+// hooks
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+
 const isEmailAndPasswordValid = ref(false);
+const { snapshot, send, actorRef } = useMachine(registrationMachine)
+
+actorRef.on('onSuccess', ({ data }) => {
+  authStore.setToken(data.token)
+  authStore.setUserData(data.result)
+})
+
+/**
+ * auth form
+ */
+const validationAuthSchema = toTypedSchema(
+  zod.object({
+    email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
+    password: zod.string().min(1, { message: 'This is required' }),
+    confirmPassword: zod.string().min(1, { message: 'This is required' })
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: '兩次密碼輸入不一致',
+    path: ['confirmPassword']
+  })
+)
+const { handleSubmit: handleAuthSubmit, errors: authErrors, isSubmitting: isAuthSubmitting } = useForm({
+  initialValues: {
+    email: '',
+    password: '',
+    confirmPassword: ''
+  },
+  validationSchema: validationAuthSchema,
+  validateOnMount: false
+})
+const { value: email } = useField('email')
+const { value: password } = useField('password')
+const { value: confirmPassword } = useField('confirmPassword')
+
+const onAuthSubmit = handleAuthSubmit((values) => {
+  const { confirmPassword, ...data } = values
+  send({ type: 'NEXT', data: data })
+  // router.push({ name: route.name, query: { step: `${snapshot.value.context.step}` } })
+})
+
+/** basic information */
+const validationBasicSchema = toTypedSchema(
+  zod.object({
+    name: zod.string().min(1, { message: 'This is required' }),
+    phone: zod.string().min(1, { message: 'This is required' }),
+    birthday: zod.array(zod.number()),
+    address: zod.object({
+      detail: zod.string().min(1, { message: 'This is required' }),
+      city: zod.string().min(1, { message: 'This is required' }),
+      county: zod.string().min(1, { message: 'This is required' }),
+      zipcode: zod.number(),
+    }),
+    confirm: zod.boolean().refine(
+      (value) => value === true, 
+      { message: '您必須閱讀並同意本網站個資使用規範' }
+    )
+  })
+)
+const { handleSubmit: handleBasicSubmit, isSubmitting: isBasicSubmitting, errors: basicErrors } = useForm({
+  initialValues: {
+    name: '',
+    phone: '',
+    birthday: [],
+    address: {
+      zipcode: 802,
+      detail: '',
+      city: '',
+      county: ''
+    },
+    confirm: false
+  },
+  validationSchema: validationBasicSchema,
+  validateOnMount: false
+})
+const { value: name } = useField('name')
+const { value: phone } = useField('phone')
+const { value: year } = useField<number>('birthday.[0]')
+const { value: month } = useField<number>('birthday.[1]')
+const { value: date } = useField<number>('birthday.[2]')
+const { value: detail } = useField('address.detail')
+const { value: city } = useField('address.city')
+const { value: county } = useField('address.county')
+const { value: confirm } = useField('confirm')
+
+const days = computed(() => {
+  if (year.value && month.value) return getDaysInMonth(new Date(year.value, month.value - 1))
+  return 0
+})
+
+const onBasicSubmit = handleBasicSubmit((values) => {
+  const { confirm, birthday, ...data } = values
+  if (snapshot.value.can({ type: 'NEXT', data: {...data, birthday: '' } })) {
+    send({ type: 'NEXT', data: {...data, birthday: formatRFC3339(new Date(birthday[0], birthday[1] - 1, birthday[2])) } })
+  }
+})
+
+onBeforeRouteUpdate((to, from) => {})
+
 </script>
 
 <template>
@@ -60,8 +167,9 @@ const isEmailAndPasswordValid = ref(false);
 
     <div class="mb-4">
       <form
-        :class="{'d-none': isEmailAndPasswordValid}"
+        v-if="snapshot.context.step === 1"
         class="mb-4"
+        @submit.prevent="onAuthSubmit"
       >
         <div class="mb-4 fs-8 fs-md-7">
           <label
@@ -75,6 +183,7 @@ const isEmailAndPasswordValid = ref(false);
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
             placeholder="hello@exsample.com"
             type="email"
+            v-model="email"
           >
         </div>
         <div class="mb-4 fs-8 fs-md-7">
@@ -89,6 +198,7 @@ const isEmailAndPasswordValid = ref(false);
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
             placeholder="請輸入密碼"
             type="password"
+            v-model="password"
           >
         </div>
         <div class="mb-10 fs-8 fs-md-7">
@@ -103,19 +213,21 @@ const isEmailAndPasswordValid = ref(false);
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
             placeholder="請再輸入一次密碼"
             type="password"
+            v-model="confirmPassword"
           >
         </div>
         <button
           class="btn btn-neutral-40 w-100 py-4 text-neutral-60 fw-bold"
-          type="button"
-          @click="isEmailAndPasswordValid = true"
+          type="submit"
+          :disabled="isAuthSubmitting"
         >
           下一步
         </button>
       </form>
       <form
-        :class="{'d-none': !isEmailAndPasswordValid}"
+        v-if="snapshot.context.step === 2"
         class="mb-4"
+        @submit.prevent="onBasicSubmit"
       >
         <div class="mb-4 fs-8 fs-md-7">
           <label
@@ -125,6 +237,7 @@ const isEmailAndPasswordValid = ref(false);
             姓名
           </label>
           <input
+            v-model="name"
             id="name"
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40  rounded-3"
             placeholder="請輸入姓名"
@@ -139,6 +252,7 @@ const isEmailAndPasswordValid = ref(false);
             手機號碼
           </label>
           <input
+            v-model="phone"
             id="phone"
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40  rounded-3"
             placeholder="請輸入手機號碼"
@@ -156,35 +270,43 @@ const isEmailAndPasswordValid = ref(false);
             class="d-flex gap-2"
           >
             <select
+              v-model="year"
               id="birth"
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
             >
               <option
                 v-for="year in 65"
                 :key="year"
-                value="`${year + 1958} 年`"
+                :value="year + 1958"
               >
                 {{ year + 1958 }} 年
               </option>
             </select>
             <select
+              v-model="month"
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
             >
               <option
                 v-for="month in 12"
                 :key="month"
-                value="`${month} 月`"
+                :value="month"
               >
                 {{ month }} 月
               </option>
             </select>
             <select
+              v-model="date"
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+              placeholder="日"
+              :disabled="!(year && month)"
             >
+              <option value="none" selected disabled hidden>
+                日
+              </option>
               <option
-                v-for="day in 30"
+                v-for="day in days"
                 :key="day"
-                value="`${day} 日`"
+                :value="day"
               >
                 {{ day }} 日
               </option>
@@ -203,6 +325,7 @@ const isEmailAndPasswordValid = ref(false);
               class="d-flex gap-2 mb-2"
             >
               <select
+                v-model="city"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
                 <option value="臺北市">
@@ -219,6 +342,7 @@ const isEmailAndPasswordValid = ref(false);
                 </option>
               </select>
               <select
+                v-model="county"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
                 <option value="前金區">
@@ -236,6 +360,7 @@ const isEmailAndPasswordValid = ref(false);
               </select>
             </div>
             <input
+              v-model="detail"
               id="address"
               type="text"
               class="form-control p-4 rounded-3"
@@ -249,7 +374,7 @@ const isEmailAndPasswordValid = ref(false);
             id="agreementCheck"
             class="form-check-input"
             type="checkbox"
-            value=""
+            v-model="confirm"
           >
           <label
             class="form-check-label fw-bold"
@@ -259,8 +384,9 @@ const isEmailAndPasswordValid = ref(false);
           </label>
         </div>
         <button
+          :disabled="isBasicSubmitting"
           class="btn btn-primary-100 w-100 py-4 text-neutral-0 fw-bold"
-          type="button"
+          type="submit"
         >
           完成註冊
         </button>
