@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { fetchUserData, putUserData } from '~/api';
 import { parseISO } from 'date-fns'
 import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 import { editMachine } from '~/machines/edit-machine'
 import { useMachine } from '@xstate/vue'
+import type { AuthEntry } from '~/types'
 
 defineOptions({
   name: 'UserProfile'
@@ -27,12 +27,13 @@ const props = defineProps({
 })
 const { userId } = toRefs(props)
 
+const { $api } = useNuxtApp()
 const { token, userData } = storeToRefs(useAuthStore())
 const { setUserData } = useAuthStore()
 const { data, status, error, refresh, clear } = await useAsyncData(
   'user-profile',
   async () => {
-    const res = await fetchUserData({ headers: { Authorization: `Bearer ${token.value!}` } })
+    const res = await $api<AuthEntry>('/api/v1/user/')
     const birthday = parseISO(res.result.birthday)
     
     return { ...res.result, birthday: [birthday.getFullYear(), birthday.getMonth() + 1, birthday.getDate()] }
@@ -68,8 +69,7 @@ const { snapshot: authSnapshot, send: authSend } = useMachine(editMachine)
 
 const onAuthSubmit = handleAuthSubmit(async(values) => {
   const { confirmNewPassword, ...data } = values
-  await putUserData({ 
-    headers: { Authorization: `Bearer ${token.value!}` },
+  await $api('/api/v1/user/', { 
     body: { userId: userId.value, ...data } })
 })
 

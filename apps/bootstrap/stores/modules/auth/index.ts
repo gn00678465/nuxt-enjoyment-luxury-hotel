@@ -1,9 +1,9 @@
 import type { AuthEntry } from '~/types';
-import { fetchUserData } from '~/api'
 
 export const useAuthStore = defineStore('auth-store', () => {
   
   const router = useRouter()
+  const { $api } = useNuxtApp()
 
   const token = useCookie('token')
   const userData = ref<AuthEntry['result']>()
@@ -24,11 +24,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
   async function getUserData() {
     if (token.value && !userData.value) {
-      const res = await fetchUserData({
-        headers: {
-          authorization: `Bearer ${token.value}`
-        }
-      })
+      const res = await $api<AuthEntry>('/api/v1/user/')
       userData.value = res.result
     }
   }
