@@ -31,7 +31,7 @@ export interface AuthEntry {
   token: string,
   result: {
     address: {
-      zipcode: 802,
+      zipcode: number,
       detail: string,
       city: string,
       county: string

@@ -5,6 +5,7 @@ import * as zod from 'zod';
 import { editMachine } from '~/machines/edit-machine'
 import { useMachine } from '@xstate/vue'
 import type { AuthEntry } from '~/types'
+import { formatRFC3339 } from "date-fns"
 
 defineOptions({
   name: 'UserProfile'
@@ -27,6 +28,7 @@ const props = defineProps({
 })
 const { userId } = toRefs(props)
 
+const { cities, counties } = useCity()
 const { $api } = useNuxtApp()
 const { token, userData } = storeToRefs(useAuthStore())
 const { setUserData } = useAuthStore()
@@ -69,8 +71,15 @@ const { snapshot: authSnapshot, send: authSend } = useMachine(editMachine)
 
 const onAuthSubmit = handleAuthSubmit(async(values) => {
   const { confirmNewPassword, ...data } = values
-  await $api('/api/v1/user/', { 
-    body: { userId: userId.value, ...data } })
+  try {
+    await $api('/api/v1/user/', {
+      method: 'put',
+      body: { userId: userId.value, ...data }
+    })
+    authSend({ type: 'SUBMIT' })
+  } catch (error) {
+    console.error("🚀 ~ onAuthSubmit ~ error:", error)
+  }
 })
 
 const isPasswdEdit = computed(() => authSnapshot.value.context.isEdit)
@@ -78,7 +87,7 @@ const isPasswdEdit = computed(() => authSnapshot.value.context.isEdit)
 /**
  * 更新資本資料
  */
-const { values, defineField: defineInfoField, handleSubmit: handleBasicSubmit } = useForm({
+const { defineField: defineInfoField, handleSubmit: handleBasicSubmit, isSubmitting: isBasicSubmitting } = useForm({
   initialValues: data.value
 })
 const [name] = defineInfoField('name')
@@ -87,10 +96,47 @@ const [birthday] = defineInfoField('birthday')
 const [city] = defineInfoField('address.city')
 const [county] = defineInfoField('address.county')
 const [detail] = defineInfoField('address.detail')
+const [zipCode] = defineInfoField('address.zipcode')
 
 const { snapshot: basicSnapshot, send: basicSend } = useMachine(editMachine)
 
 const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
+
+watch(city, (newCity, oldCity) => {
+  if (newCity !== oldCity) {
+    county.value = ''
+    zipCode.value = 0
+  }
+})
+
+watchEffect(() => {
+  if (county.value) {
+    const _zipCode = counties.value(city.value).find((item) => item.AreaName === county.value)?.ZipCode
+    if (_zipCode && !isNaN(parseInt(_zipCode))) {
+      zipCode.value = parseInt(_zipCode)
+    } else {
+      zipCode.value = 0
+    }
+  }
+})
+
+const onBasicSubmit = handleBasicSubmit(async (values) => {
+  try {
+    const basicData = {...values, birthday: formatRFC3339(new Date(values.birthday[0], values.birthday[1] - 1, values.birthday[2])) }
+    await $api('/api/v1/user/', {
+      method: 'put',
+      body: {
+        userId: userId.value,
+        ...basicData
+      }
+    })
+    basicSend({ type: 'SUBMIT' })
+    refresh()
+  } catch (error) {
+    console.error("🚀 ~ onBasicSubmit ~ error:", error)
+  }
+  
+})
 </script>
 
 <template>
@@ -185,6 +231,7 @@ const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
             :class="{'d-none': !isPasswdEdit}"
             class="btn btn-neutral-40 align-self-md-start px-8 py-4 text-neutral-60 rounded-3"
             type="submit"
+            :disabled="isAuthSubmitting"
           >
             儲存設定
           </button>
@@ -197,7 +244,7 @@ const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
         <h2 class="fs-6 fs-md-5 fw-bold">
           基本資料
         </h2>
-        <div class="d-flex flex-column gap-4 gap-md-6">
+        <form id="basic-form" class="d-flex flex-column gap-4 gap-md-6" @submit="onBasicSubmit">
           <div class="fs-8 fs-md-7">
             <label
               class="form-label"
@@ -310,34 +357,17 @@ const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
                   v-model="city"
                   class="form-select p-4 text-neutral-80 fw-medium rounded-3"
                 >
-                  <option value="臺北市">
-                    臺北市
-                  </option>
-                  <option value="臺中市">
-                    臺中市
-                  </option>
-                  <option
-                    selected
-                    value="高雄市"
-                  >
-                    高雄市
+                  
+                  <option v-for="city of cities" :value="city.CityName">
+                    {{ city.CityName }}
                   </option>
                 </select>
                 <select
                   v-model="county"
                   class="form-select p-4 text-neutral-80 fw-medium rounded-3"
                 >
-                  <option value="前金區">
-                    前金區
-                  </option>
-                  <option value="鹽埕區">
-                    鹽埕區
-                  </option>
-                  <option
-                    selected
-                    value="新興區"
-                  >
-                    新興區
+                  <option v-for="county of counties(city)" :value="county.AreaName">
+                    {{ county.AreaName }}
                   </option>
                 </select>
               </div>
@@ -350,7 +380,7 @@ const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
               >
             </div>
           </div>
-        </div>
+        </form>
         <button
           :class="{'d-none': isEditProfile}"
           class="btn btn-outline-primary-100 align-self-start px-8 py-4 rounded-3"
@@ -363,7 +393,9 @@ const isEditProfile = computed(() => basicSnapshot.value.context.isEdit)
         <button
           :class="{'d-none': !isEditProfile}"
           class="btn btn-neutral-40 align-self-md-start px-8 py-4 text-neutral-60 rounded-3"
-          type="button"
+          type="submit"
+          form="basic-form"
+          :disabled="isBasicSubmitting"
         >
           儲存設定
         </button>
