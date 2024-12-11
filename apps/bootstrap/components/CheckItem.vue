@@ -1,25 +1,29 @@
 <script setup lang="ts">
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded'
 
-const slots = defineSlots()
-const attrs = useAttrs
+defineOptions({
+  name: 'CheckItem',
+  inheritAttrs: false
+})
+
 const props = defineProps({
-  tag: {
+  text: {
     type: String,
-    default: 'div'
+    default: ''
+  },
+  textClass: {
+    type: String,
+    default: undefined
   }
 })
-const { tag } = toRefs(props)
-
-const Tag = () => h(tag.value, { ...attrs }, {
-  default: () => 'default slot',
-})
+const { text, textClass } = toRefs(props)
 </script>
 
 <template>
-  <component :is="Tag">
-    <slot></slot>
-  </component>
+  <MaterialSymbolsCheckRounded class="fs-5 text-primary-100" />
+  <p :class="textClass">
+    {{ text }}
+  </p>
 </template>
 
 <style scoped>

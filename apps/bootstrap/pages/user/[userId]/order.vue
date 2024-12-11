@@ -86,12 +86,7 @@ const roomId = 'a';  // for navigation demo
           </h3>
           <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 fs-8 fs-md-7 bg-neutral-0 border border-neutral-40 rounded-3 list-unstyled">
             <li class="flex-item d-flex gap-2">
-              <MaterialSymbolsCheckRounded
-                class="fs-5 text-primary-100"
-              />
-              <p class="mb-0 text-neutral-80 fw-bold">
-                電視
-              </p>
+              <CheckItem text="電視" text-class="mb-0 text-neutral-80 fw-bold" />
             </li>
             <li class="flex-item d-flex gap-2">
               <MaterialSymbolsCheckRounded
