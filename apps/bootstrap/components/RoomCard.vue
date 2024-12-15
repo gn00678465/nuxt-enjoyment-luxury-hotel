@@ -14,9 +14,9 @@ const props = withDefaults(defineProps<RoomCardProps>(), {
   description: '',
   images: () => [],
   info: () => ({
-    size: 36,
-    bads: 2,
-    person: [2,4]
+    size: '36',
+    bads: '2',
+    person: 4
   })
 })
 
@@ -32,9 +32,9 @@ const currency = useCurrency(price, 'zh-TW', {
 
 <script lang="ts">
 interface RoomInfo {
-  size: number
-  bads: number
-  person: number[]
+  size: string
+  bads: string
+  person: number
 }
 
 export interface RoomCardProps {
@@ -66,7 +66,7 @@ export interface RoomCardProps {
               class="mb-2 fs-5 text-primary-100"
             />
             <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-              {{ info.size }} 坪
+              {{ info.size }}
             </p>
           </li>
           <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
@@ -74,7 +74,7 @@ export interface RoomCardProps {
               class="mb-2 fs-5 text-primary-100"
             />
             <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-              {{ info.bads }} 張大床
+              {{ info.bads }}
             </p>
           </li>
           <li class="card-info px-4 py-5 border border-primary-40 rounded-3">
@@ -82,7 +82,7 @@ export interface RoomCardProps {
               class="mb-2 fs-5 text-primary-100"
             />
             <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-              {{ info.person.join('-') }} 人
+              {{ info.person }} 人
             </p>
           </li>
         </ul>

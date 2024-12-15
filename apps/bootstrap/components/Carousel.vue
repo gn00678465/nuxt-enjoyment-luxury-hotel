@@ -19,9 +19,13 @@ const props = defineProps({
   imgs: {
     type: Array as PropType<ImageOptions[]>,
     default: () => []
+  },
+  provider: {
+    type: String,
+    default: undefined
   }
 })
-const { aspectRatio, options, imgs } = toRefs(props)
+const { aspectRatio, options, imgs, provider } = toRefs(props)
 
 const viewport = useViewport()
 
@@ -188,9 +192,11 @@ export type CarouselInst = {
           <NuxtSource
             v-for="(sour, idx) of img.sources" :key="idx"
             v-bind="sour"
+            :provider="provider"
           />
           <NuxtImg
             v-bind="img"
+            :provider="provider"
           />
         </picture>
       </swiper-slide>

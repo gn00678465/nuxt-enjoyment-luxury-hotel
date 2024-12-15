@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CarouselImgs } from '~/components/Carousel.vue';
 import type { RoomCardProps } from '~/components/RoomCard.vue';
+import type { RoomsResponse } from '~/types';
 
 definePageMeta({
   name: 'rooms',
@@ -10,6 +11,14 @@ definePageMeta({
   }
 })
 
+useSeoMeta({
+  title: '客房旅宿'
+})
+
+const { data: rooms } = useAPI<RoomsResponse>('/api/v1/rooms/', {
+  method: 'get'
+})
+
 const router = useRouter()
 
 function goToRoomDetail(id?: string) {
@@ -17,24 +26,25 @@ function goToRoomDetail(id?: string) {
 }
 
 const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
-  src: '/images/home-hero.png',
+  src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/qfvsnhmazubqb8w7rae5.png',
   srcset: '',
   format: 'png',
   fit: 'cover',
+  provider: 'cloudinary',
   style: {
     width: '100%',
     filter: 'brightness(40%)'
   },
   sources: [
     {
-      src: '/images/home-hero-sm.png',
+      src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/t4mevjqyr21bmdqjg0w7.png',
       media: '(orientation: portrait)',
       modifiers: {
         format: 'png'
       }
     },
     {
-      src: '/images/home-hero.png',
+      src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/qfvsnhmazubqb8w7rae5.png',
       media: '(orientation: landscape)',
       modifiers: {
         format: 'png'
@@ -43,15 +53,15 @@ const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
   ]
 })))
 
-const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
-  {
-    title: '尊爵雙人房',
-    description: '享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。',
-    price: 10000,
+const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => {
+  return rooms.value?.result.map((item) => ({
+    title: item.name,
+    description: item.description,
+    price: item.price,
     info: {
-      size: 24,
-      bads: 2,
-      person: [2,4]
+      size: item.areaInfo,
+      bads: item.bedInfo,
+      person: item.maxPeople
     },
     images: [1,2,3,4,5].map((num) => {
       return {
@@ -72,99 +82,9 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
         ]
       }
     }),
-    roomId: 'a'
-  },
-  {
-    title: '景觀雙人房',
-    description: '景觀雙人房擁有絕美的高雄市景觀，讓您在舒適的環境中欣賞城市之美。',
-    price: 10000,
-    info: {
-      size: 28,
-      bads: 2,
-      person: [2,4]
-    },
-    images: [1,2,3,4,5].map((num) => {
-      return {
-        src: `/images/room-b-sm-${num}.png`,
-        srcset: '',
-        format: 'png',
-        fit: 'cover',
-        style: {
-          width: '100%',
-          height: '100%'
-        },
-        sources: [
-          {
-            src: `/images/room-b-${num}.png`,
-            media: '(min-width:576px)',
-            modifiers: { format: 'png' }
-          }
-        ]
-      }
-    }),
-    roomId: 'b'
-  },
-  {
-    title: '豪華雅緻房',
-    description: '享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。',
-    price: 10000,
-    info: {
-      size: 36,
-      bads: 2,
-      person: [2,4]
-    },
-    images: [1,2,3,4,5].map((num) => {
-      return {
-        src: `/images/room-c-sm-${num}.png`,
-        srcset: '',
-        format: 'png',
-        fit: 'cover',
-        style: {
-          width: '100%',
-          height: '100%'
-        },
-        sources: [
-          {
-            src: `/images/room-c-${num}.png`,
-            media: '(min-width:576px)',
-            modifiers: { format: 'png' }
-          }
-        ]
-      }
-    }),
-    roomId: 'c'
-  },
-  {
-    title: '景觀尊榮家庭房',
-    description: '景觀尊榮家庭房不僅有寬敞的空間，還有絕美的市景視野，是帶給家庭最尊榮的待遇。',
-    price: 10000,
-    info: {
-      size: 48,
-      bads: 2,
-      person: [2,4]
-    },
-    images: [1,2,3,4,5].map((num) => {
-      return {
-        src: `/images/room-d-sm-${num}.png`,
-        srcset: '',
-        format: 'png',
-        fit: 'cover',
-        style: {
-          width: '100%',
-          height: '100%'
-        },
-        sources: [
-          {
-            src: `/images/room-d-${num}.png`,
-            media: '(min-width:576px)',
-            modifiers: { format: 'png' }
-          }
-        ]
-      }
-    }),
-    roomId: 'd'
-  }
-])
+    roomId: item._id
+  })) || []
+})
 
 </script>
 
@@ -172,7 +92,7 @@ const roomInfos = computed<(RoomCardProps & { roomId?: string })[]>(() => [
   <main>
     <section class="hero position-relative">
 
-      <Carousel :aspect-ratio="{ xs: '375/466', lg: '1920 / 800' }" :imgs="heroImgs"></Carousel>
+      <Carousel :aspect-ratio="{ xs: '375/466', lg: '1920 / 800' }" provider="cloudinary" :imgs="heroImgs" />
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row gap-10 gap-md-20 w-100 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">
@@ -235,13 +155,13 @@ $grid-breakpoints: (
   inset: 0;
 }
 
-.deco-line {
+:deep(.deco-line) {
   width: 33vw;
   height: 2px;
   background-image: linear-gradient(to right, #BE9C7C, #FFFFFF);
 }
 
-.hero .deco-line {
+.hero :deep(.deco-line) {
   @include media-breakpoint-down(md) {
     width: 2px;
     height: 83px;

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { RoomResponse } from '~/types';
+import { createColumnHelper, useVueTable, getCoreRowModel, FlexRender } from '@tanstack/vue-table'
+import type { RoomsResponse, RoomEntry } from '~/types';
+import MaterialSymbolsEditOutline from '~icons/material-symbols/edit-outline';
+import MdiTrashCanOutline from '~icons/mdi/trash-can-outline';
 
 definePageMeta({
   layout: 'admin-layout',
@@ -10,52 +13,127 @@ definePageMeta({
 })
 
 const { $api } = useNuxtApp()
-const { data: rooms, refresh } = await useAPI<RoomResponse>('/api/v1/admin/rooms/')
+const router = useRouter()
+const { data: rooms, refresh } = await useAPI<RoomsResponse>('/api/v1/admin/rooms/', { method: 'get' })
+const roomInfo = useCookie<RoomEntry | null>('roomInfo', {
+  default: () => null,
+  watch: true,
+})
 
+const columnHelper = createColumnHelper<RoomEntry>()
+
+const defaultColumns = [
+  columnHelper.accessor('name' ,{
+    id: 'name',
+    header: 'Name',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor(row => row.description, {
+    id: 'description',
+    header: 'Description',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor(row => row.price, {
+    id: 'price',
+    header: 'Price',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor(row => row.layoutInfo, {
+    id: 'layoutInfo',
+    header: 'LayoutInfo',
+    cell: info => info.getValue().length,
+  }),
+  columnHelper.accessor(row => row.facilityInfo, {
+    id: 'facilityInfo',
+    header: 'FacilityInfo',
+    cell: info => info.getValue().length,
+  }),
+  columnHelper.accessor(row => row.updatedAt, {
+    id: 'updatedAt',
+    header: 'Updated',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.display({
+    id: 'actions',
+    header: 'Actions',
+    cell: (props) => h('div', { class: 'flex gap-x-2' }, [
+      h(MaterialSymbolsEditOutline, {
+        width:24,
+        height: 24,
+        class: 'cursor-pointer',
+        onClick: () => {
+          roomInfo.value = props.row.original
+          router.push({
+            name: 'admin_rooms-edit',
+            query: { id: props.row.original._id }
+          })
+        }
+      }),
+      h(MdiTrashCanOutline, {
+        width:24,
+        height: 24,
+        class: 'cursor-pointer',
+        onClick() {
+          const confirm = window.confirm(`是否要移除 - ${props.row.original.name}`)
+          if (confirm) {
+            $api(`/api/v1/admin/rooms/${props.row.original._id}`, {
+              method: 'DELETE'
+            }).then(() => {
+              refresh()
+            })
+          }
+        }
+      })
+    ])
+  }),
+]
+
+function onCreate() {
+  router.push({
+    name: 'admin_rooms-edit'
+  })
+}
+
+const table = useVueTable({
+  get data() {
+    return rooms.value?.result || []
+  },
+  columns: defaultColumns,
+  getCoreRowModel: getCoreRowModel(),
+})
 
 </script>
 
 <template>
   <div>
     <div class="flex justify-end">
-      <button type="button" class="btn btn-primary">Create</button>
+      <button type="button" class="btn btn-primary" @click="onCreate">Create</button>
     </div>
     <table class="table table-hover table-bordered">
       <thead class="table-dark">
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
-          <th scope="col">Action</th>
+        <tr v-for="headerGroup in table.getHeaderGroups()"
+            :key="headerGroup.id">
+            <th
+            v-for="header in headerGroup.headers"
+            :key="header.id"
+            :colSpan="header.colSpan"
+          >
+            <FlexRender
+              v-if="!header.isPlaceholder"
+              :render="header.column.columnDef.header"
+              :props="header.getContext()"
+            />
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>Edit Delete</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>Edit Delete</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-          <td>Edit Delete</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-          <td>Edit Delete</td>
+        <tr v-for="row in table.getRowModel().rows" :key="row.id">
+          <td v-for="cell in row.getVisibleCells()" :key="cell.id">
+            <FlexRender
+              :render="cell.column.columnDef.cell"
+              :props="cell.getContext()"
+            />
+          </td>
         </tr>
       </tbody>
     </table>

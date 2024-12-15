@@ -2,18 +2,50 @@
 import FluentSlideSize24Filled from '~icons/fluent/slide-size-24-filled';
 import MaterialSymbolsKingBed from '~icons/material-symbols/king-bed';
 import IcBaselinePerson from '~icons/ic/baseline-person';
-import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
 import IcBaselinePlus from '~icons/ic/baseline-plus';
 import IcBaselineMinus from '~icons/ic/baseline-minus';
-import type { DatePickerModalInst } from '~/components/DatePickerModal.vue';
+import type { DatePickerModalInst, DateChangeOptions } from '~/components/DatePickerModal.vue';
+import type { RoomResponse } from '~/types';
+import { orderMachine } from '~/machines/order-machine';
+import { useMachine } from '@xstate/vue';
+import { format } from 'date-fns';
 
 definePageMeta({
   name: 'room-detail',
   layout: 'front-layout',
   meta: {
     title:'房型詳細'
+  },
+  props: true
+})
+
+const props = defineProps({
+  roomId: {
+    type: String,
+    required: true
   }
 })
+
+const { roomId } = toRefs(props)
+const { $api } = useNuxtApp()
+const { data: roomInfo, refresh } = useAsyncData(`/api/v1/rooms/${roomId.value}`, async () => {
+  const res = await $api<RoomResponse>(`/api/v1/rooms/${roomId.value}`)
+  return res.result
+})
+
+useSeoMeta({
+  title: roomInfo.value?.name
+})
+
+const { snapshot, send, actorRef } = useMachine(orderMachine, {
+  input: { maxPeople: roomInfo.value?.maxPeople }
+})
+
+const currency = useCurrency(roomInfo.value?.price ?? 0, 'zh-TW', {
+  style: 'decimal',
+  currency: 'TWD',
+  minimumFractionDigits: 0,
+});
 
 const datePickerModal = ref<DatePickerModalInst|null>(null);
 
@@ -21,37 +53,9 @@ const openModal = () => {
   datePickerModal.value?.open()
 }
 
-const MAX_BOOKING_PEOPLE = 10;
-const bookingPeople = ref(1);
-
-const daysCount = ref(0);
-
-const daysFormatOnMobile = (date: any) => date?.split('-').slice(1, 3).join(' / ');
-
-const formatDate = (date: any) => {
-  const offsetToUTC8 = date.getHours() + 8;
-  date.setHours(offsetToUTC8);
-  return date.toISOString().split('T')[0];
-};
-
-const currentDate = new Date();
-
-const bookingDate = reactive({
-  date: {
-    start: formatDate(currentDate),
-    end: null,
-  },
-  minDate: new Date(),
-  maxDate: new Date(currentDate.setFullYear(currentDate.getFullYear() + 1))
-});
-
-const handleDateChange = (bookingInfo) => {
-  const { start, end } = bookingInfo.date;
-  bookingDate.date.start = start;
-  bookingDate.date.end = end;
-
-  bookingPeople.value = bookingInfo?.people || 1;
-  daysCount.value = bookingInfo.daysCount;
+const handleDateChange = (bookingInfo: DateChangeOptions) => {
+  const { start, end } = bookingInfo.date
+  send({ type: 'DATE_CHANGE', dates: { start:start, end: end }, daysCount: bookingInfo.daysCount })
 }
 
 </script>
@@ -136,10 +140,10 @@ const handleDateChange = (bookingInfo) => {
           <div class="col-12 col-md-7 d-flex flex-column gap-6 gap-md-20">
             <div>
               <h1 class="mb-4 text-neutral-100 fw-bold">
-                尊爵雙人房
+                {{ roomInfo?.name }}
               </h1>
               <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
-                享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。
+                {{ roomInfo?.description }}
               </p>
             </div>
 
@@ -153,7 +157,7 @@ const handleDateChange = (bookingInfo) => {
                     class="mb-2 fs-5 text-primary-100"
                   />
                   <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                    24 坪
+                    {{ roomInfo?.areaInfo }}
                   </p>
                 </li>
                 <li class="card-info px-4 py-5 bg-neutral-0 border border-primary-40 rounded-3">
@@ -161,7 +165,7 @@ const handleDateChange = (bookingInfo) => {
                     class="mb-2 fs-5 text-primary-100"
                   />
                   <p class="mb-0 fw-bold text-neutral-80 text-nowrap">
-                    1 張大床
+                    {{ roomInfo?.bedInfo }}
                   </p>
                 </li>
                 <li class="card-info px-4 py-5 bg-neutral-0 border border-primary-40 rounded-3">
@@ -180,50 +184,8 @@ const handleDateChange = (bookingInfo) => {
                 房間格局
               </h3>
               <ul class="d-flex flex-wrap gap-6 gap-md-10 p-6 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
-                <li class="d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    市景
-                  </p>
-                </li>
-                <li class="d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    獨立衛浴
-                  </p>
-                </li>
-                <li class="d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    客廳
-                  </p>
-                </li>
-                <li class="d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    書房
-                  </p>
-                </li>
-                <li class="d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    樓層電梯
-                  </p>
+                <li v-for="layout of roomInfo?.layoutInfo ?? []" class="d-flex gap-2">
+                  <CheckItem :text="layout.title" :is-provide="layout.isProvide" text-class="mb-0 text-neutral-80 fw-bold"></CheckItem>
                 </li>
               </ul>
             </section>
@@ -233,95 +195,8 @@ const handleDateChange = (bookingInfo) => {
                 房內設備
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    平面電視
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    吹風機
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    冰箱
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    熱水壺
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    檯燈
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    衣櫃
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    除濕機
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    浴缸
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    書桌
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    音響
-                  </p>
+                <li v-for="facility of roomInfo?.facilityInfo ?? []" class="flex-item d-flex gap-2">
+                  <CheckItem :text="facility.title" :is-provide="facility.isProvide" text-class="mb-0 text-neutral-80 fw-bold" />
                 </li>
               </ul>
             </section>
@@ -331,95 +206,8 @@ const handleDateChange = (bookingInfo) => {
                 備品提供
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 bg-neutral-0 fs-8 fs-md-7 rounded-3 list-unstyled">
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    衛生紙
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    拖鞋
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    沐浴用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    清潔用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    刮鬍刀
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    吊衣架
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    浴巾
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    刷牙用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    罐裝水
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                    
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    梳子
-                  </p>
+                <li v-for="amenity of roomInfo?.amenityInfo ?? []" class="flex-item d-flex gap-2">
+                  <CheckItem :text="amenity.title" :is-provide="amenity.isProvide" text-class="mb-0 text-neutral-80 fw-bold" />
                 </li>
               </ul>
             </section>
@@ -453,10 +241,10 @@ const handleDateChange = (bookingInfo) => {
 
               <div class="text-neutral-80">
                 <h2 class="fw-bold">
-                  尊爵雙人房
+                  {{ roomInfo?.name }}
                 </h2>
                 <p class="mb-0 fw-medium">
-                  享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。
+                  {{ roomInfo?.description }}
                 </p>
               </div>
 
@@ -467,7 +255,7 @@ const handleDateChange = (bookingInfo) => {
                       id="checkinInput"
                       readonly
                       type="date"
-                      :value="bookingDate.date.start"
+                      :value="snapshot.context.checkInDate && format(snapshot.context.checkInDate, 'yyyy-MM-dd')"
                       class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                       style="min-height: 74px;"
                       placeholder="yyyy-mm-dd"
@@ -486,7 +274,7 @@ const handleDateChange = (bookingInfo) => {
                       id="checkoutInput"
                       readonly
                       type="date"
-                      :value="bookingDate.date.end"
+                      :value="snapshot.context.checkOutDate && format(snapshot.context.checkOutDate, 'yyyy-MM-dd')"
                       class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                       style="min-height: 74px;"
                       placeholder="yyyy-mm-dd"
@@ -507,10 +295,10 @@ const handleDateChange = (bookingInfo) => {
                   </p>
                   <div class="d-flex align-items-center gap-4">
                     <button
-                      :class="{'disabled bg-neutral-40': bookingPeople === 1}"
+                      :class="{'disabled bg-neutral-40': snapshot.context.peopleNum === 1}"
                       class="btn btn-neutral-0 p-4 border border-neutral-40 rounded-circle"
                       type="button"
-                      @click="bookingPeople--"
+                      @click="send({ type: 'DECREMENT' })"
                     >
                       <IcBaselineMinus
                         class="fs-5 text-neutral-100"
@@ -523,18 +311,16 @@ const handleDateChange = (bookingInfo) => {
                       style="width: 24px;"
                       name="people"
                     >
-                      {{ bookingPeople }}
+                      {{ snapshot.context.peopleNum }}
                     </h6>
 
                     <button
                       :class="{
-                        'disabled bg-neutral-40':
-                          bookingPeople ===
-                          MAX_BOOKING_PEOPLE
+                        'disabled bg-neutral-40': snapshot.context.peopleNum === snapshot.context.maxPeople
                       }"
                       class="btn btn-neutral-0 p-4 border border-neutral-40 rounded-circle"
                       type="button"
-                      @click="bookingPeople++"
+                      @click="send({ type: 'INCREMENT' })"
                     >
                       <IcBaselinePlus
                         class="fs-5 text-neutral-100"
@@ -545,7 +331,9 @@ const handleDateChange = (bookingInfo) => {
               </div>
 
               <h5 class="mb-0 text-primary-100 fw-bold">
-                NT$ 10,000
+                <ClientOnly>
+                  NT$ {{ currency }}
+                </ClientOnly>
               </h5>
               <NuxtLink
                 :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
@@ -559,8 +347,12 @@ const handleDateChange = (bookingInfo) => {
       </div>
       
       <div class="d-flex d-md-none justify-content-between align-items-center position-fixed bottom-0 w-100 p-3 bg-neutral-0">
-        <template v-if="bookingDate.date.end === null">
-          <small class="text-neutral-80 fw-medium">ＮＴ$ 10,000 / 晚</small>
+        <template v-if="snapshot.context.checkOutDate === null">
+          <small class="text-neutral-80 fw-medium">
+            <ClientOnly>
+              NT$ {{ currency }} / 晚
+            </ClientOnly>
+          </small>
           <button
             class="btn btn-primary-100 px-12 py-4 text-neutral-0 fw-bold rounded-3"
             type="button"
@@ -572,8 +364,14 @@ const handleDateChange = (bookingInfo) => {
 
         <template v-else>
           <div class="d-flex flex-column gap-1">
-            <small class="text-neutral-80 fw-medium">ＮＴ$ 10,000 / {{ daysCount }} 晚 / {{ bookingPeople }} 人</small>
-            <span class="text-neutral fs-9 fw-medium text-decoration-underline">{{ daysFormatOnMobile(bookingDate.date?.start) }} - {{ daysFormatOnMobile(bookingDate.date?.end) }}</span>
+            <small class="text-neutral-80 fw-medium">
+              <ClientOnly>
+                NT$ {{ currency }} / {{ snapshot.context.daysCount }} 晚 / {{ snapshot.context.peopleNum }} 人
+              </ClientOnly>
+            </small>
+            <span class="text-neutral fs-9 fw-medium text-decoration-underline">
+              <!-- {{ daysFormatOnMobile(bookingDate.date?.start) }} - {{ daysFormatOnMobile(bookingDate.date?.end) }} -->
+            </span>
           </div>
           <NuxtLink
             :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
@@ -587,7 +385,7 @@ const handleDateChange = (bookingInfo) => {
 
     <DatePickerModal
       ref="datePickerModal"
-      :date-time="bookingDate"
+      :max-people="roomInfo?.maxPeople"
       @handle-date-change="handleDateChange"
     />
   </main>

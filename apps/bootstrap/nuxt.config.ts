@@ -77,6 +77,9 @@ export default defineNuxtConfig({
         }
       }
     },
+    cloudinary: {
+      baseURL: 'https://res.cloudinary.com/drhaq32ec/image/upload/'
+    }
   },
   icon: {
     serverBundle: {

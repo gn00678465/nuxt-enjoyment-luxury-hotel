@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod';
+import type {  RoomEntry } from '~/types';
 import * as z from 'zod';
+import MdiWeb from '~icons/mdi/web';
 
 definePageMeta({
   layout: 'admin-layout',
@@ -9,6 +11,11 @@ definePageMeta({
     title: '房型管理 Edit'
   },
 })
+
+const { $api } = useNuxtApp()
+const route = useRoute()
+const id = computed(() => route.query.id?.toString())
+const roomInfo = useCookie<RoomEntry | null>('roomInfo')
 
 const layoutInfoRef = ref([
   {
@@ -95,7 +102,15 @@ const amenityInfoRef = ref([
 ])
 
 const { defineField, handleSubmit, errors } = useForm({
-  initialValues: {
+  initialValues: computed(() => {
+    if (roomInfo.value) {
+      return transformObject(
+        roomInfo.value,
+        ['layoutInfo', 'facilityInfo', 'amenityInfo'],
+        (items) => items.map(item => (item.title)))
+    }
+    return null
+  }).value || {
     name: "",
     description: "",
     imageUrl: "https://fakeimg.pl/300/",
@@ -128,6 +143,7 @@ const { defineField, handleSubmit, errors } = useForm({
 })
 const [name] = defineField('name')
 const [description] = defineField('description')
+const [imageUrl] = defineField('imageUrl')
 const [areaInfo] = defineField('areaInfo')
 const [bedInfo] = defineField('bedInfo')
 const [maxPeople] = defineField('maxPeople')
@@ -136,19 +152,39 @@ const [layoutInfo] = defineField('layoutInfo')
 const [facilityInfo] = defineField('facilityInfo')
 const [amenityInfo] = defineField('amenityInfo')
 
-const onSubmit = handleSubmit((values) => {
+const onSubmit = handleSubmit(async (values) => {
   const vals = transformObject(
     values,
     ['layoutInfo', 'facilityInfo', 'amenityInfo'],
-    (items) => items.map(item => ({ isSupport: true, title: item })))
+    (items) => items.map(item => ({ isProvide: true, title: item })))
   
-  console.log("🚀 ~ onSubmit ~ vals:", vals)
+    try {
+      if (!roomInfo.value) {
+        await $api('/api/v1/admin/rooms/', {
+          method: 'post',
+          body: vals
+        })
+      } else {
+        await $api(`/api/v1/admin/rooms/${id.value}`, {
+          method: 'put',
+          body: vals
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      useRouter().go(-1)
+    }
+})
+
+onBeforeRouteLeave(() => {
+  roomInfo.value = null
 })
 
 </script>
 
 <template>
-  <div class="w-full h-full flex items-center justify-center">
+  <div class="w-full h-full flex items-center justify-center py-10">
     <form @submit.prevent="onSubmit">
       <div class="form-floating mb-3">
         <input v-model="name" type="type" class="form-control" id="name" placeholder="name">
@@ -159,8 +195,11 @@ const onSubmit = handleSubmit((values) => {
         <label for="Description">Description</label>
       </div>
 
-      <div class="mb-3 w-full">
-        <nuxt-img src="https://fakeimg.pl/300/" class="img-fluid" fit="cover" alt="..." />
+      <div class="input-group mb-3 w-full">
+        <span class="input-group-text" id="basic-addon1">
+          <MdiWeb></MdiWeb>
+        </span>
+        <input v-model="imageUrl" type="text" class="form-control" placeholder="Image url" aria-label="Image url" aria-describedby="Image url">
       </div>
 
       <div class="mb-3">

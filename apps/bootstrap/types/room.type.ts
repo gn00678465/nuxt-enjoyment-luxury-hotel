@@ -26,5 +26,10 @@ export type RoomEntries = Array<RoomEntry>
 
 export type RoomResponse = {
   status: boolean
+  result: RoomEntry
+}
+
+export type RoomsResponse = {
+  status: boolean
   result: RoomEntries
 }

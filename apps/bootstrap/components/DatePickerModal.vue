@@ -2,6 +2,8 @@
 import IcBaselineMinus from '~icons/ic/baseline-minus';
 import IcBaselinePlus from '~icons/ic/baseline-plus';
 import type { Modal } from "bootstrap";
+import type { Ref } from 'vue';
+import { format, addYears, differenceInDays } from 'date-fns';
 
 const modalRef = ref<HTMLDivElement>()
 const { $bootstrap } = useNuxtApp();
@@ -19,22 +21,32 @@ const toggle = () => {
   modal.value?.toggle()
 };
 
-const emit = defineEmits(['handleDateChange']);
+const emit = defineEmits<{
+  handleDateChange: [DateChangeOptions]
+}>();
 
 const props = defineProps({
-  dateTime: {
-    type: Object,
-    required: true,
+  maxPeople: {
+    type: Number,
+    default: 0
+  },
+  checkInDate: {
+    type: Number,
+    default: () => new Date().getTime()
+  },
+  checkOutDate: {
+    type: Number,
+    default: undefined
   }
 })
 
 const tempDate = reactive({
   date: {
-    start: props.dateTime.date.start,
-    end: props.dateTime.date.end,
+    start: props.checkInDate,
+    end: props.checkOutDate || null,
   },
-  minDate: props.dateTime.minDate,
-  maxDate: props.dateTime.maxDate,
+  minDate: new Date(),
+  maxDate: addYears(new Date(), 1),
   key: 0
 });
 
@@ -43,31 +55,20 @@ const masks = {
   modelValue: 'YYYY-MM-DD'
 };
 
-// const { mapCurrent } = useScreens({
-//   md: '768px',
-// });
-
 const rows = useViewportMap({ md: 1}, 2)
 const columns = useViewportMap({ md: 2}, 1);
 const expanded = useViewportMap({ md: false}, true);
 const titlePosition = useViewportMap({ md: 'center'}, 'left');
 
-const formatDateTitle = (date: string) => date?.replaceAll('-', ' / ');
+// const formatDateTitle = (date: string) => date?.replaceAll('-', ' / ');
 
 const daysCount = computed(() => {
-  const startDate = tempDate.date.start;
-  const endDate = tempDate.date.end;
-
-  if (startDate === null || endDate === null) return 0;
-
-  const differenceTime = new Date(endDate).getTime() - new Date(startDate).getTime();
-
-  const differenceDay = Math.round(differenceTime / (1000 * 60 * 60 * 24));
-
-  return differenceDay;
+  if (tempDate.date.start && tempDate.date.end) {
+    return differenceInDays(tempDate.date.end, tempDate.date.start)
+  }
+  return 0
 })
 
-const MAX_BOOKING_PEOPLE = 10;
 const bookingPeopleMobile = ref(1);
 
 
@@ -78,18 +79,20 @@ const confirmDateOnMobile = () => {
 }
 
 const confirmDate = () => {
+  if (!tempDate.date.start || !tempDate.date.end) return
+
   const isMobile = useViewportMap({md: false}, true);
 
   if (isMobile.value) {
     emit('handleDateChange', {
-      date: tempDate.date,
-      people: bookingPeopleMobile,
-      daysCount
+      date: tempDate.date as { start: number; end: number},
+      people: bookingPeopleMobile.value,
+      daysCount: daysCount.value
     });
   } else {
     emit('handleDateChange', {
-      date: tempDate.date,
-      daysCount
+      date: tempDate.date as { start: number; end: number},
+      daysCount: daysCount.value
     });
   }
 
@@ -97,7 +100,7 @@ const confirmDate = () => {
 }
 
 const clearDate = () => {
-  tempDate.date.start = null;
+  tempDate.date.start = new Date().getTime();
   tempDate.date.end = null;
   tempDate.key++;
 }
@@ -151,6 +154,16 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
     return defaultValue
   })
 }
+
+export type DateChangeOptions = {
+    date: { start: number, end: number }
+    people: number
+    daysCount: number
+  } | {
+    date: { start: number, end: number }
+    daysCount: number
+  }
+  
 </script>
 
 <template>
@@ -190,9 +203,9 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
                 {{ daysCount }} 晚
               </h3>
               <div class="d-flex gap-2 text-neutral-80 fs-8 fw-medium">
-                <span>{{ formatDateTitle(tempDate.date.start) }}</span>
+                <span>{{ format(tempDate.date.start, 'yyyy-MM-dd') }}</span>
                 -
-                <span>{{ formatDateTitle(tempDate.date.end) }}</span>
+                <span>{{ tempDate.date.end && format(tempDate.date.end, 'yyyy-MM-dd') }}</span>
               </div>
             </div>
           </div>
@@ -205,9 +218,9 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
               {{ daysCount }} 晚
             </h3>
             <div class="d-flex gap-2 text-neutral-80 fw-medium">
-              <span>{{ tempDate.date.start?.replaceAll('-', ' / ') }}</span>
+              <span>{{ format(tempDate.date.start, 'yyyy-MM-dd') }}</span>
               -
-              <span>{{ tempDate.date.end?.replaceAll('-', ' / ') }}</span>
+              <span>{{ tempDate.date.end && format(tempDate.date.end, 'yyyy-MM-dd') }}</span>
             </div>
           </div>
 
@@ -217,7 +230,7 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
                 id="checkInDate"
                 readonly
                 type="date"
-                :value="tempDate.date.start"
+                :value="tempDate.date.start && format(tempDate.date.start, 'yyyy-MM-dd')"
                 class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                 style="min-height: 74px;"
                 placeholder="yyyy-mm-dd"
@@ -235,7 +248,7 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
                 id="checkoutDate"
                 type="date"
                 readonly
-                :value="tempDate.date.end"
+                :value="tempDate.date.end && format(tempDate.date.end, 'yyyy-MM-dd')"
                 class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                 style="min-height: 74px;"
                 placeholder="yyyy-mm-dd"
@@ -256,7 +269,7 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
           >
           <VDatePicker
             :key="tempDate.key"
-            v-model.range.string="tempDate.date"
+            v-model.range.number="tempDate.date"
             color="primary"
             :masks="masks"
             :first-day-of-week="1"
@@ -301,9 +314,7 @@ export function useViewportMap<T extends Record<BreakpointKeys, unknown>>(
 
               <button
                 :class="{
-                  'disabled bg-neutral-40':
-                    bookingPeopleMobile ===
-                    MAX_BOOKING_PEOPLE
+                  'disabled bg-neutral-40': bookingPeopleMobile === props.maxPeople
                 }"
                 class="btn btn-neutral-0 p-4 border border-neutral-40 rounded-circle"
                 type="button"

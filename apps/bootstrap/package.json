@@ -13,6 +13,7 @@
     "@nuxt/image": "^1.8.1",
     "@nuxt/image-edge": "latest",
     "@popperjs/core": "^2.11.8",
+    "@tanstack/vue-table": "^8.20.5",
     "@vee-validate/zod": "^4.14.7",
     "@xstate/vue": "^4.0.0",
     "aos": "^2.3.4",
