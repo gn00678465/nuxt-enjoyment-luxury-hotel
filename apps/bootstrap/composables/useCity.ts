@@ -12,7 +12,8 @@ export function useCity() {
     CityEngName: item.CityEngName
   })))
 
-  const counties = computed<(city: string) => CountyOption[]>(() => (city: string) => {
+  const counties = computed<(city?: string) => CountyOption[]>(() => (city?: string) => {
+    if (!city) return []
     const data = cityCountyData.find((item) => item.CityName === city)
     if (data) return data.AreaList
     return []

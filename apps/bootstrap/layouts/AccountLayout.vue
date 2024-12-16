@@ -88,8 +88,9 @@ import MaterialSymbolsCloseRounded from '~icons/material-symbols/close-rounded';
       <NuxtImg
         class="d-none d-md-block position-relative z-1 min-vh-100 object-fit-cover"
         style="max-width: 50%;"
-        src="/images/login-hero.png"
+        src="https://res.cloudinary.com/drhaq32ec/image/upload/v1734387434/enjoyment-luxury-hotel/mawmicdwcmkjufogmfcq.png"
         alt="login-hero"
+        provider="cloudinary"
       />
 
       <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1 pt-18 pt-md-0">

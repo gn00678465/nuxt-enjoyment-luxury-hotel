@@ -7,6 +7,7 @@ import IcBaselineMinus from '~icons/ic/baseline-minus';
 import type { DatePickerModalInst, DateChangeOptions } from '~/components/DatePickerModal.vue';
 import type { RoomResponse } from '~/types';
 import { orderMachine } from '~/machines/order-machine';
+import type { Snapshot } from 'xstate';
 import { useMachine } from '@xstate/vue';
 import { format } from 'date-fns';
 
@@ -26,6 +27,7 @@ const props = defineProps({
   }
 })
 
+const router = useRouter()
 const { roomId } = toRefs(props)
 const { $api } = useNuxtApp()
 const { data: roomInfo, refresh } = useAsyncData(`/api/v1/rooms/${roomId.value}`, async () => {
@@ -36,7 +38,7 @@ const { data: roomInfo, refresh } = useAsyncData(`/api/v1/rooms/${roomId.value}`
 useSeoMeta({
   title: roomInfo.value?.name
 })
-
+const persistenceSnapshotData = useCookie<Snapshot<unknown> | null>('persistenceSnapshotData', { default: () => null })
 const { snapshot, send, actorRef } = useMachine(orderMachine, {
   input: { maxPeople: roomInfo.value?.maxPeople }
 })
@@ -56,6 +58,13 @@ const openModal = () => {
 const handleDateChange = (bookingInfo: DateChangeOptions) => {
   const { start, end } = bookingInfo.date
   send({ type: 'DATE_CHANGE', dates: { start:start, end: end }, daysCount: bookingInfo.daysCount })
+}
+
+const handleNext = () => {
+  if (!snapshot.value.context.checkOutDate || !snapshot.value.context.checkInDate) return
+  send({ type: 'NEXT' })
+  persistenceSnapshotData.value = actorRef.getPersistedSnapshot()
+  router.push({ name: 'booking', params: { roomId: roomId.value } })
 }
 
 </script>
@@ -255,7 +264,7 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
                       id="checkinInput"
                       readonly
                       type="date"
-                      :value="snapshot.context.checkInDate && format(snapshot.context.checkInDate, 'yyyy-MM-dd')"
+                      :value="snapshot.context?.checkInDate && format(snapshot.context.checkInDate, 'yyyy-MM-dd')"
                       class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                       style="min-height: 74px;"
                       placeholder="yyyy-mm-dd"
@@ -274,7 +283,7 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
                       id="checkoutInput"
                       readonly
                       type="date"
-                      :value="snapshot.context.checkOutDate && format(snapshot.context.checkOutDate, 'yyyy-MM-dd')"
+                      :value="snapshot.context?.checkOutDate && format(snapshot.context.checkOutDate, 'yyyy-MM-dd')"
                       class="form-control p-4 pt-9 text-neutral-100 fw-medium border-neutral-100 rounded-3"
                       style="min-height: 74px;"
                       placeholder="yyyy-mm-dd"
@@ -295,7 +304,7 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
                   </p>
                   <div class="d-flex align-items-center gap-4">
                     <button
-                      :class="{'disabled bg-neutral-40': snapshot.context.peopleNum === 1}"
+                      :class="{'disabled bg-neutral-40': snapshot.context?.peopleNum === 1}"
                       class="btn btn-neutral-0 p-4 border border-neutral-40 rounded-circle"
                       type="button"
                       @click="send({ type: 'DECREMENT' })"
@@ -311,12 +320,12 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
                       style="width: 24px;"
                       name="people"
                     >
-                      {{ snapshot.context.peopleNum }}
+                      {{ snapshot.context?.peopleNum }}
                     </h6>
 
                     <button
                       :class="{
-                        'disabled bg-neutral-40': snapshot.context.peopleNum === snapshot.context.maxPeople
+                        'disabled bg-neutral-40': snapshot.context?.peopleNum === snapshot.context?.maxPeople
                       }"
                       class="btn btn-neutral-0 p-4 border border-neutral-40 rounded-circle"
                       type="button"
@@ -336,8 +345,8 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
                 </ClientOnly>
               </h5>
               <NuxtLink
-                :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
-                class="btn btn-primary-100 py-4 text-neutral-0 fw-bold rounded-3"
+                class="btn btn-primary-100 px-12 py-4 text-neutral-0 fw-bold rounded-3"
+                @click.prevent="handleNext"
               >
                 立即預訂
               </NuxtLink>
@@ -347,7 +356,7 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
       </div>
       
       <div class="d-flex d-md-none justify-content-between align-items-center position-fixed bottom-0 w-100 p-3 bg-neutral-0">
-        <template v-if="snapshot.context.checkOutDate === null">
+        <template v-if="snapshot.context?.checkOutDate === null">
           <small class="text-neutral-80 fw-medium">
             <ClientOnly>
               NT$ {{ currency }} / 晚
@@ -366,16 +375,16 @@ const handleDateChange = (bookingInfo: DateChangeOptions) => {
           <div class="d-flex flex-column gap-1">
             <small class="text-neutral-80 fw-medium">
               <ClientOnly>
-                NT$ {{ currency }} / {{ snapshot.context.daysCount }} 晚 / {{ snapshot.context.peopleNum }} 人
+                NT$ {{ currency }} / {{ snapshot.context?.daysCount }} 晚 / {{ snapshot.context?.peopleNum }} 人
               </ClientOnly>
             </small>
             <span class="text-neutral fs-9 fw-medium text-decoration-underline">
-              <!-- {{ daysFormatOnMobile(bookingDate.date?.start) }} - {{ daysFormatOnMobile(bookingDate.date?.end) }} -->
+              {{ snapshot.context?.checkInDate && format(snapshot.context.checkInDate, 'yyyy-MM-dd') }} - {{ snapshot.context?.checkOutDate && format(snapshot.context.checkOutDate, 'yyyy-MM-dd') }}
             </span>
           </div>
           <NuxtLink
-            :to="{ name: 'booking', params: { roomId: $route.params.roomId } }"
             class="btn btn-primary-100 px-12 py-4 text-neutral-0 fw-bold rounded-3"
+            @click.prevent="handleNext"
           >
             立即預訂
           </NuxtLink>

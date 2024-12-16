@@ -1,5 +1,5 @@
 import { assign, setup, fromPromise, emit } from "xstate"
-import { formatRFC3339 } from "date-fns"
+import type { OrderReqBody } from "~/types"
 
 type OrderMachineContext = {
   peopleNum: number
@@ -8,11 +8,14 @@ type OrderMachineContext = {
   checkOutDate: number | null
   maxPeople: number
   minPeople: number
-}
+} & Omit<OrderReqBody, 'checkInDate' | 'checkOutDate' | 'peopleNum'>
 
 type OrderMachineEvent = { type: 'INCREMENT' } |
 { type: 'DECREMENT' } |
-{ type: 'DATE_CHANGE', dates: { start: number , end: number }, daysCount: number }
+{ type: 'DATE_CHANGE', dates: { start: number , end: number }, daysCount: number } |
+{ type: 'USER_INFO_UPDATE'; data: Omit<OrderReqBody, 'checkInDate' | 'checkOutDate' | 'peopleNum'> } |
+{ type: 'NEXT' } |
+{ type: 'PREV' }
 
 type OrderMachineInput = {
   maxPeople?: number
@@ -37,20 +40,33 @@ export const orderMachine = setup({
       }
       return { peopleNum: context.peopleNum - 1 }
     }),
+    userDataUpdate: assign(({ context }, params: Omit<OrderReqBody, 'checkInDate' | 'checkOutDate' | 'peopleNum'>) => ({
+      ...context,
+      ...params
+    }))
   }
 }).createMachine({
   id: 'order-machine',
-  initial: 'order',
+  initial: 'orderInfo',
   context: ({ input }) => ({
     peopleNum: 1,
     daysCount: 0,
     checkInDate: new Date().getTime(),
     checkOutDate: null,
     maxPeople: input.maxPeople || Infinity,
-    minPeople: 1
+    minPeople: 1,
+    name: '',
+    email: '',
+    phone: '',
+    address: {
+      city: '',
+      county: '',
+      detail: '',
+      zipcode: 0
+    }
   }),
   states: {
-    order: {
+    orderInfo: {
       on: {
         INCREMENT: {
           actions: 'increment'
@@ -64,10 +80,29 @@ export const orderMachine = setup({
             checkOutDate: event.dates.end,
             daysCount: event.daysCount
           }))
+        },
+        NEXT: {
+          target: 'useInfo'
         }
       }
     },
-    basicInfo: {},
+    useInfo: {
+      on: {
+        USER_INFO_UPDATE: {
+          actions: [
+            {
+              type: 'userDataUpdate', params: ({ event }) => event.data,
+            }
+          ]
+        },
+        NEXT: {
+          target: 'useInfo'
+        },
+        PREV: {
+          target: 'orderInfo'
+        },
+      }
+    },
     submit: {}
   }
 })
