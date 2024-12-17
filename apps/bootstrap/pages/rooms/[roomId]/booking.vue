@@ -99,7 +99,7 @@ function setUserData() {
 }
 
 const onSubmit = handleSubmit((values) => {
-  send({ type: 'ORDER', data: values })
+  send({ type: 'ORDER', data: { userInfo: values, roomId: roomId.value } })
 })
 
 watch(city, (newCity, oldCity) => {

@@ -40,14 +40,9 @@ useSeoMeta({
 })
 const persistenceSnapshotData = useCookie<Snapshot<unknown> | null>('persistenceSnapshotData', { default: () => null })
 const { snapshot, send, actorRef } = useMachine(orderMachine, {
-  input: { maxPeople: roomInfo.value?.maxPeople }
+  input: { maxPeople: roomInfo.value?.maxPeople, roomId: roomId.value }
 })
 
-// const currency = useCurrency(roomInfo.value?.price ?? 0, 'zh-TW', {
-//   style: 'decimal',
-//   currency: 'TWD',
-//   minimumFractionDigits: 0,
-// });
 
 const datePickerModal = ref<DatePickerModalInst|null>(null);
 

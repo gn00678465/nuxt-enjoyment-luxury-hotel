@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
+import type { OrdersResponse } from '~/types'
+import { format, differenceInDays, parseISO } from 'date-fns';
+import { zhTW } from 'date-fns/locale'
 
 defineOptions({
   name: 'UserOrder'
@@ -20,7 +23,9 @@ const props = defineProps({
     required: true
   }
 })
+const { $formatNumber } = useNuxtApp()
 const { userId } = toRefs(props)
+const { data: orders } = await useAPI<OrdersResponse>('/api/v1/orders/')
 
 const roomId = 'a';  // for navigation demo
 </script>
@@ -284,135 +289,54 @@ const roomId = 'a';  // for navigation demo
           歷史訂單
         </h2>
 
-        <div class="d-flex flex-column flex-lg-row gap-6">
-          <NuxtImg
-            class="img-fluid object-fit-cover rounded-3"
-            style="max-width: 120px; height: 80px;"
-            src="/images/room-b-sm-1.png"
-            alt="room-a"
-            format="png"
-          />
-          <section class="d-flex flex-column gap-4">
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
-              預訂參考編號： HH2302183151222
-            </p>
-          
-            <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
-              尊爵雙人房
-            </h3>
+        <template v-for="(order, idx) of orders?.result ?? []">
+          <div class="d-flex flex-column flex-lg-row gap-6">
+            <NuxtImg
+              class="img-fluid object-fit-cover rounded-3"
+              style="max-width: 120px; height: 80px;"
+              :src="order.roomId.imageUrl"
+              alt="room-a"
+              format="png"
+              provider="cloudinary"
+            />
+            <section class="d-flex flex-column gap-4">
+              <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
+                預訂參考編號： {{ order?._id }}
+              </p>
+            
+              <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
+                {{ order?.roomId.name }}
+              </h3>
 
-            <div class="text-neutral-80 fw-medium">
-              <p class="mb-2">
-                住宿天數： 1 晚
-              </p>
-              <p class="mb-0">
-                住宿人數：2 位
-              </p>
-            </div>
+              <div class="text-neutral-80 fw-medium">
+                <p class="mb-2">
+                  住宿天數： {{ differenceInDays(parseISO(order.checkOutDate), parseISO(order.checkInDate)) }} 晚
+                </p>
+                <p class="mb-0">
+                  住宿人數：{{ order?.peopleNum }} 位
+                </p>
+              </div>
 
-            <div class="text-neutral-80 fs-8 fs-md-7 fw-medium">
-              <p class="title-deco mb-2">
-                入住：6 月 10 日星期二，15:00 可入住
+              <div class="text-neutral-80 fs-8 fs-md-7 fw-medium">
+                <p class="title-deco mb-2">
+                  入住：{{ format(parseISO(order.checkInDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，15:00 可入住
+                </p>
+                <p
+                  class="title-deco mb-0"
+                >
+                  退房：{{ format(parseISO(order.checkOutDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，12:00 前退房
+                </p>
+              </div>
+              <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
+                <ClientOnly>
+                  NT$ {{ $formatNumber(order?.roomId?.price ?? 0) }}
+                </ClientOnly>
               </p>
-              <p
-                class="title-deco mb-0"
-              >
-                退房：6 月 11 日星期三，12:00 前退房
-              </p>
-            </div>
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
-              NT$ 10,000
-            </p>
-          </section>
-        </div>
+            </section>
+          </div>
 
-        <hr class="my-0 opacity-100 text-neutral-40">
-
-        <div class="d-flex flex-column flex-lg-row gap-6">
-          <NuxtImg
-            class="img-fluid object-fit-cover rounded-3"
-            style="max-width: 120px; height: 80px;"
-            src="/images/room-b-sm-1.png"
-            alt="room-a"
-            format="png"
-          />
-          <section class="d-flex flex-column gap-4">
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
-              預訂參考編號： HH2302183151222
-            </p>
-          
-            <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
-              尊爵雙人房
-            </h3>
-
-            <div class="text-neutral-80 fw-medium">
-              <p class="mb-2">
-                住宿天數： 1 晚
-              </p>
-              <p class="mb-0">
-                住宿人數：2 位
-              </p>
-            </div>
-
-            <div class="text-neutral-80 fs-8 fs-md-7 fw-medium">
-              <p class="title-deco mb-2">
-                入住：6 月 10 日星期二，15:00 可入住
-              </p>
-              <p
-                class="title-deco mb-0"
-              >
-                退房：6 月 11 日星期三，12:00 前退房
-              </p>
-            </div>
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
-              NT$ 10,000
-            </p>
-          </section>
-        </div>
-
-        <hr class="my-0 opacity-100 text-neutral-40">
-
-        <div class="d-flex flex-column flex-lg-row gap-6">
-          <NuxtImg
-            class="img-fluid object-fit-cover rounded-3"
-            style="max-width: 120px; height: 80px;"
-            src="/images/room-b-sm-1.png"
-            alt="room-a"
-            format="png"
-          />
-          <section class="d-flex flex-column gap-4">
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
-              預訂參考編號： HH2302183151222
-            </p>
-          
-            <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
-              尊爵雙人房
-            </h3>
-
-            <div class="text-neutral-80 fw-medium">
-              <p class="mb-2">
-                住宿天數： 1 晚
-              </p>
-              <p class="mb-0">
-                住宿人數：2 位
-              </p>
-            </div>
-
-            <div class="text-neutral-80 fs-8 fs-md-7 fw-medium">
-              <p class="title-deco mb-2">
-                入住：6 月 10 日星期二，15:00 可入住
-              </p>
-              <p
-                class="title-deco mb-0"
-              >
-                退房：6 月 11 日星期三，12:00 前退房
-              </p>
-            </div>
-            <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
-              NT$ 10,000
-            </p>
-          </section>
-        </div>
+          <hr v-if="idx + 1 < (orders?.result.length ?? 0)" class="my-0 opacity-100 text-neutral-40">
+        </template>
 
         <button
           class="btn btn-outline-primary-100 py-4 fw-bold"

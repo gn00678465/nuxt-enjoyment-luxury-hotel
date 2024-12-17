@@ -1,19 +1,17 @@
 import { assign, setup, fromPromise, emit } from "xstate"
 import type { OrderReqBody, OrderResponse } from "~/types"
-import { postOrder } from '~/api'
-import { formatRFC3339 } from 'date-fns'
+import { format } from 'date-fns'
 
 const submitLogic = fromPromise(async({ input }: { input: OrderReqBody }) => {
-  const authStore = useAuthStore()
-  return await postOrder({
-    headers: {
-      Authorization: `Bearer ${authStore.token}`
-    },
+  const { $api } = useNuxtApp()
+  return await $api<OrderResponse>('/api/v1/orders/', {
+    method: 'post',
     body: input
   })
 })
 
 type OrderMachineContext = {
+  roomId: string
   peopleNum: number
   daysCount: number
   checkInDate: number | null
@@ -31,6 +29,7 @@ type OrderMachineEvent = { type: 'INCREMENT' } |
 
 type OrderMachineInput = {
   maxPeople?: number
+  roomId?: string
 }
 
 type OrderMachineEmitted = { type: 'onSuccess', data: OrderResponse } |
@@ -68,20 +67,23 @@ export const orderMachine = setup({
   id: 'order-machine',
   initial: 'orderInfo',
   context: ({ input }) => ({
+    roomId: input.roomId || '',
     peopleNum: 1,
     daysCount: 0,
     checkInDate: new Date().getTime(),
     checkOutDate: null,
     maxPeople: input.maxPeople || Infinity,
     minPeople: 1,
-    name: '',
-    email: '',
-    phone: '',
-    address: {
-      city: '',
-      county: '',
-      detail: '',
-      zipcode: 0
+    userInfo: {
+      name: '',
+      email: '',
+      phone: '',
+      address: {
+        city: '',
+        county: '',
+        detail: '',
+        zipcode: 0
+      }
     }
   }),
   states: {
@@ -121,27 +123,43 @@ export const orderMachine = setup({
       }
     },
     submit: {
-      type: 'final',
-      invoke: {
-        src: 'submitActor',
-        input: ({ context }) => {
-          const { maxPeople, minPeople, daysCount, checkInDate, checkOutDate, ...other } = context
-          return {
-            ...other,
-            checkInDate: formatRFC3339(checkInDate as number),
-            checkOutDate: formatRFC3339(checkOutDate as number) }
+      initial: 'idle',
+      states: {
+        idle: {
+          invoke: {
+            src: 'submitActor',
+            input: ({ context }) => {
+              const { maxPeople, minPeople, daysCount, checkInDate, checkOutDate, ...other } = context
+              return {
+                ...other,
+                checkInDate: format(checkInDate as number, 'yyyy/MM/dd'),
+                checkOutDate: format(checkOutDate as number, 'yyyy/MM/dd') }
+            },
+            onDone: {
+              actions: [
+                emit(({ event }) => ({ type: 'onSuccess', data: event.output }))
+              ]
+            },
+            onError: {
+              actions: [
+                emit(({ event }) => ({ type: 'onError', error: event.error }))
+              ]
+            }
+          }
         },
-        onDone: {
-          actions: [
-            emit(({ event }) => ({ type: 'onSuccess', data: event.output }))
-          ]
+        success: {
+          type: 'final'
         },
-        onError: {
-          actions: [
-            emit(({ event }) => ({ type: 'onError', error: event.error }))
-          ]
+        failure: {
+          type: 'final'
         }
+      },
+      onDone: {
+        target: 'done'
       }
+    },
+    done: {
+      type: 'final'
     }
   }
 })
