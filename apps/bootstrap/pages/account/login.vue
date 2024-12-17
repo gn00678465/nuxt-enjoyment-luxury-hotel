@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
-import type { AuthEntry } from '~/types'
+import type { AuthResponse } from '~/types'
 
 definePageMeta({
   name: 'login',
@@ -44,7 +44,7 @@ const { value: rememberMe } = useField('rememberMe')
 
 const onSubmit = handleSubmit(async (values) => {
   const { rememberMe, ...data } = values
-  const res = await $api<AuthEntry>('/api/v1/user/login', { method: 'post', body: data })
+  const res = await $api<AuthResponse>('/api/v1/user/login', { method: 'post', body: data })
   authStore.setToken(res.token)
   authStore.setUserData(res.result)
   router.push({ name: 'user-profile', params: { userId: res.result._id }})

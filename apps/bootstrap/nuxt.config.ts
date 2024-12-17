@@ -31,8 +31,8 @@ export default defineNuxtConfig({
     'assets'
   ],
   runtimeConfig: {
-    public: {
-      API_URL: 'http://localhost:3005'
+    app: {
+      apiUrl: ''
     }
   },
   imports: {

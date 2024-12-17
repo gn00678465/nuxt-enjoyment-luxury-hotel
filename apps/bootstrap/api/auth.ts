@@ -1,13 +1,13 @@
 import type { FetchOptions } from 'ofetch'
 import { request } from "./core";
-import type { AuthEntry, SignupReqBody, LoginReqBody, UserDataReqBody } from '~/types';
+import type { AuthResponse, SignupReqBody } from '~/types';
 
 /**
  * 註冊
  * @param options 
  * @returns 
  */
-export const postSignup = (options?: FetchOptions<'json', SignupReqBody>) => request<AuthEntry>('/api/v1/user/signup',{
+export const postSignup = (options?: FetchOptions<'json', SignupReqBody>) => request<AuthResponse>('/api/v1/user/signup',{
   method: 'post',
   ...options
 })

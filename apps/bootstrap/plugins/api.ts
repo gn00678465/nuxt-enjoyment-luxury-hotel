@@ -1,8 +1,9 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const token = useCookie('token')
+  const config = useRuntimeConfig()
 
   const api = $fetch.create({
-    baseURL: "http://localhost:3005",
+    baseURL: (config.app.apiUrl as string) || "http://localhost:3005",
     parseResponse: JSON.parse,
     onRequest({ request, options, error }) {
       if (token.value) {

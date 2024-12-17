@@ -1,5 +1,5 @@
 import { assign, setup, fromPromise, emit } from "xstate"
-import type { RegistrationReqBody, AuthEntry } from "~/types"
+import type { RegistrationReqBody, AuthResponse } from "~/types"
 import { postSignup } from "~/api/auth"
 
 type AuthForm = Pick<RegistrationReqBody, 'email' | 'password'>
@@ -14,7 +14,7 @@ export type RegistrationMachineContext = {
 export type RegistrationMachineEvents = { type: 'NEXT', data: AuthForm | BasicForm } |
 {type: 'PREV' }
 
-export type RegistrationMachineEmitted = { type: 'onSuccess', data: AuthEntry } |
+export type RegistrationMachineEmitted = { type: 'onSuccess', data: AuthResponse } |
 { type: 'onError', error: unknown }
 
 export type RegistrationMachineStates = 'emailAndPassword' | 'basicInformation'

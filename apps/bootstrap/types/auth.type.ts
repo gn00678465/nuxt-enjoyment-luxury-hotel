@@ -7,11 +7,13 @@ export interface RegistrationReqBody {
   address: {
     zipcode: number
     detail: string
+    city: string,
+    county: string
   }
 }
-export type SignupReqBody = Omit<AuthEntry['result'], '_id' | 'createdAt' | 'updatedAt' | 'id' | 'birthday'>
+export type SignupReqBody = Omit<AuthEntry, '_id' | 'createdAt' | 'updatedAt' | 'id' | 'birthday'>
 
-export type LoginReqBody = Pick<AuthEntry['result'], 'email'> & { password: string }
+export type LoginReqBody = Pick<AuthEntry, 'email'> & { password: string }
 
 export type UserDataReqBody = {
   userId: string
@@ -27,22 +29,24 @@ export type UserDataReqBody = {
 }
 
 export interface AuthEntry {
+  address: {
+    zipcode: number,
+    detail: string,
+    city: string,
+    county: string
+  },
+  _id: string
+  name: string
+  email: string
+  phone: string
+  birthday: string
+  createdAt: string
+  updatedAt: string
+  id: string
+}
+
+export interface AuthResponse {
   status: boolean,
   token: string,
-  result: {
-    address: {
-      zipcode: number,
-      detail: string,
-      city: string,
-      county: string
-    },
-    _id: string
-    name: string
-    email: string
-    phone: string
-    birthday: string
-    createdAt: string
-    updatedAt: string
-    id: string
-  }
+  result: AuthEntry
 }

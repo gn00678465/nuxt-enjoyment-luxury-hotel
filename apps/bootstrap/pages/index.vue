@@ -22,7 +22,7 @@ useSeoMeta({
 const roomSwiper = ref<CarouselInst>()
 
 const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
-    src: '/images/home-hero.png',
+    src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/qfvsnhmazubqb8w7rae5.png',
     srcset: '',
     format: 'png',
     fit: 'cover',
@@ -33,14 +33,14 @@ const heroImgs = computed<CarouselImgs>(() => [...new Array(5)].map(() => ({
     },
     sources: [
       {
-        src: '/images/home-hero-sm.png',
+        src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/t4mevjqyr21bmdqjg0w7.png',
         media: '(orientation: portrait)',
         modifiers: {
           format: 'png'
         }
       },
       {
-        src: '/images/home-hero.png',
+        src: 'https://res.cloudinary.com/drhaq32ec/image/upload/v1734235491/enjoyment-luxury-hotel/qfvsnhmazubqb8w7rae5.png',
         media: '(orientation: landscape)',
         modifiers: {
           format: 'png'
@@ -91,7 +91,7 @@ const slideNext = () => {
   <main class="overflow-hidden">
     <section class="hero position-relative">
 
-      <Carousel :aspect-ratio="{ xs: '375/812', md: '16 / 9' }" :imgs="heroImgs"></Carousel>
+      <Carousel :aspect-ratio="{ xs: '375/812', md: '16 / 9' }" :imgs="heroImgs" provider="cloudinary" />
 
       <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row justify-content-md-between gap-md-10 w-100 px-md-20 position-absolute z-2">
         <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">

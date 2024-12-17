@@ -33,7 +33,7 @@ const { cities, counties } = useCity()
 const { userData } = storeToRefs(useAuthStore())
 const router = useRouter();
 const { roomId } = toRefs(props)
-const { $api } = useNuxtApp()
+const { $api, $formatNumber } = useNuxtApp()
 const { data: roomInfo, refresh } = useAsyncData(`/api/v1/rooms/${roomId.value}`, async () => {
   const res = await $api<RoomResponse>(`/api/v1/rooms/${roomId.value}`)
   return res.result
@@ -44,7 +44,17 @@ const { snapshot, send, actorRef } = useMachine(orderMachine, {
   input: {}
 })
 
-const { defineField, handleSubmit, isSubmitting, setValues } = useForm({
+actorRef.on('onSuccess', (event) => {
+  const { _id } = event.data.result
+  router.push({
+    name: 'booking-confirmation',
+    params: {
+      bookingId: _id
+    }
+  })
+})
+
+const { defineField, handleSubmit, isSubmitting, setValues, validate, errors } = useForm({
   initialValues: {
     name: '',
     email: '',
@@ -89,8 +99,7 @@ function setUserData() {
 }
 
 const onSubmit = handleSubmit((values) => {
-  send({ type: 'USER_INFO_UPDATE', data: values })
-  send({ type: 'NEXT' })
+  send({ type: 'ORDER', data: values })
 })
 
 watch(city, (newCity, oldCity) => {
@@ -117,20 +126,6 @@ const goBack = () => {
 }
 const isLoading = ref(false);
 
-const confirmBooking = () => {
-  isLoading.value = true;
-
-  setTimeout(() => {
-    isLoading.value = false;
-    router.push({
-      name: 'booking-confirmation',
-      params: {
-        bookingId: 'HH2302183151222'
-      }
-    })
-  }, 1500);
-}
-
 </script>
 
 <template>
@@ -150,7 +145,7 @@ const confirmBooking = () => {
           </h1>
         </button>
 
-        <div class="row gap-10 gap-md-0">
+        <form class="row gap-10 gap-md-0" id="order-form" @submit.prevent="onSubmit">
           <div class="col-12 col-md-7">
             <section>
               <h2 class="mb-8 mb-md-10 text-neutral-100 fs-6 fs-md-4 fw-bold">
@@ -228,7 +223,7 @@ const confirmBooking = () => {
                 </button>
               </div>
 
-              <form class="d-flex flex-column gap-6" @submit.prevent="onSubmit">
+              <div class="d-flex flex-column gap-6">
                 <div class="text-neutral-100">
                   <label
                     for="name"
@@ -302,7 +297,7 @@ const confirmBooking = () => {
                     placeholder="請輸入詳細地址"
                   >
                 </div>
-              </form>
+              </div>
             </section>
 
             <hr class="my-10 my-md-12 opacity-100 text-neutral-60">
@@ -397,14 +392,14 @@ const confirmBooking = () => {
                 </h2>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <div class="d-flex align-items-center text-neutral-100 fw-medium">
-                    <span>NT$ 10,000</span>
+                    <span>NT$ {{ $formatNumber(roomInfo?.price ?? 0) }}</span>
                     <MaterialSymbolsCloseRounded
                       class="ms-2 me-1 text-neutral-80"
                     />
-                    <span class="text-neutral-80">2 晚</span>
+                    <span class="text-neutral-80">{{ snapshot.context.daysCount }} 晚</span>
                   </div>
                   <span class="fw-medium">
-                    NT$ 20,000
+                    NT$ {{ $formatNumber(roomInfo?.price ?? 0) }}
                   </span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center fw-medium">
@@ -421,21 +416,25 @@ const confirmBooking = () => {
                     總價
                   </p>
                   <span>
-                    NT$ 19,000
+                    NT$ {{ $formatNumber((roomInfo?.price ?? 0) * snapshot.context.daysCount) }}
                   </span>
                 </div>
               </div>
 
               <button
                 class="btn btn-primary-100 py-4 text-neutral-0 fw-bold rounded-3"
-                type="button"
-                @click="confirmBooking"
+                type="submit"
+                form="order-form"
+                :disabled="isSubmitting"
+                @click="() => {
+                  validate()
+                }"
               >
                 確認訂房
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </section>
 

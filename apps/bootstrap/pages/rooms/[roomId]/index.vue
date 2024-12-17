@@ -29,7 +29,7 @@ const props = defineProps({
 
 const router = useRouter()
 const { roomId } = toRefs(props)
-const { $api } = useNuxtApp()
+const { $api, $formatNumber } = useNuxtApp()
 const { data: roomInfo, refresh } = useAsyncData(`/api/v1/rooms/${roomId.value}`, async () => {
   const res = await $api<RoomResponse>(`/api/v1/rooms/${roomId.value}`)
   return res.result
@@ -43,11 +43,11 @@ const { snapshot, send, actorRef } = useMachine(orderMachine, {
   input: { maxPeople: roomInfo.value?.maxPeople }
 })
 
-const currency = useCurrency(roomInfo.value?.price ?? 0, 'zh-TW', {
-  style: 'decimal',
-  currency: 'TWD',
-  minimumFractionDigits: 0,
-});
+// const currency = useCurrency(roomInfo.value?.price ?? 0, 'zh-TW', {
+//   style: 'decimal',
+//   currency: 'TWD',
+//   minimumFractionDigits: 0,
+// });
 
 const datePickerModal = ref<DatePickerModalInst|null>(null);
 
@@ -341,7 +341,7 @@ const handleNext = () => {
 
               <h5 class="mb-0 text-primary-100 fw-bold">
                 <ClientOnly>
-                  NT$ {{ currency }}
+                  NT$ {{ $formatNumber(roomInfo?.price ?? 0) }}
                 </ClientOnly>
               </h5>
               <NuxtLink
@@ -359,7 +359,7 @@ const handleNext = () => {
         <template v-if="snapshot.context?.checkOutDate === null">
           <small class="text-neutral-80 fw-medium">
             <ClientOnly>
-              NT$ {{ currency }} / 晚
+              NT$ {{ $formatNumber(roomInfo?.price ?? 0) }} / 晚
             </ClientOnly>
           </small>
           <button
@@ -375,7 +375,7 @@ const handleNext = () => {
           <div class="d-flex flex-column gap-1">
             <small class="text-neutral-80 fw-medium">
               <ClientOnly>
-                NT$ {{ currency }} / {{ snapshot.context?.daysCount }} 晚 / {{ snapshot.context?.peopleNum }} 人
+                NT$ {{ $formatNumber(roomInfo?.price ?? 0) }} / {{ snapshot.context?.daysCount }} 晚 / {{ snapshot.context?.peopleNum }} 人
               </ClientOnly>
             </small>
             <span class="text-neutral fs-9 fw-medium text-decoration-underline">

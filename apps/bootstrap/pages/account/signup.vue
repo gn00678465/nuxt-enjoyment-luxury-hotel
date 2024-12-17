@@ -15,8 +15,6 @@ definePageMeta({
 })
 
 // hooks
-const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 
 const isEmailAndPasswordValid = ref(false);

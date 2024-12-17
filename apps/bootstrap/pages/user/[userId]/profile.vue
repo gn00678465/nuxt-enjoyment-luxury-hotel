@@ -4,7 +4,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 import { editMachine } from '~/machines/edit-machine'
 import { useMachine } from '@xstate/vue'
-import type { AuthEntry } from '~/types'
+import type { AuthResponse } from '~/types'
 import { formatRFC3339 } from "date-fns"
 
 defineOptions({
@@ -35,7 +35,7 @@ const { setUserData } = useAuthStore()
 const { data, status, error, refresh, clear } = await useAsyncData(
   'user-profile',
   async () => {
-    const res = await $api<AuthEntry>('/api/v1/user/')
+    const res = await $api<AuthResponse>('/api/v1/user/')
     const birthday = parseISO(res.result.birthday)
     
     return { ...res.result, birthday: [birthday.getFullYear(), birthday.getMonth() + 1, birthday.getDate()] }
