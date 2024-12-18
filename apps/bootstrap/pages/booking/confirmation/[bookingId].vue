@@ -1,16 +1,44 @@
 <script setup lang="ts">
 import MaterialSymbolsCheckRounded from '~icons/material-symbols/check-rounded';
+import type { OrderResponse } from '~/types';
+import { format, differenceInDays, parseISO } from 'date-fns';
+import { zhTW } from 'date-fns/locale'
 
 definePageMeta({
   layout: 'front-layout',
   name: 'booking-confirmation',
   meta: {
     title: '預約成功'
+  },
+  props: true
+})
+
+const props = defineProps({
+  bookingId: {
+    type: String,
+    required: true
   }
 })
 
-const route = useRoute();
-const { bookingId } = route.params;
+const router = useRouter();
+const { userData } = storeToRefs(useAuthStore())
+const { $api, $formatNumber } = useNuxtApp()
+
+const { data } = useAsyncData(props.bookingId, async () => {
+  try {
+    const res =  await $api<OrderResponse>(`/api/v1/orders/${props.bookingId}`, {
+      method: 'get'
+    })
+    return res.result
+  } catch (error) {
+    router.push('/')
+    throw error
+  }
+})
+
+function onGoToMyOrder() {
+  router.push({ name: 'user-order', params: { userId: userData.value?._id } })
+}
 
 </script>
 
@@ -25,7 +53,7 @@ const { bookingId } = route.params;
             />
             <div class="text-neutral-0 fs-1">
               <h1 class="fw-bold">
-                恭喜，Jessica！
+                恭喜，{{ data?.userInfo.name }}！
               </h1>
               <p class="mb-0 fw-bold">
                 您已預訂成功
@@ -45,6 +73,7 @@ const { bookingId } = route.params;
             <button
               class="btn btn-primary-100 px-md-15 py-4 text-neutral-0 fw-bold border-0 rounded-3"
               type="button"
+              @click="onGoToMyOrder"
             >
               前往我的訂單
             </button>
@@ -62,19 +91,19 @@ const { bookingId } = route.params;
               <p class="mb-2 text-neutral-40 fw-medium">
                 姓名
               </p>
-              <span class="text-neutral-0 fw-bold">Jessica Ｗang</span>
+              <span class="text-neutral-0 fw-bold">{{ data?.userInfo.name }}</span>
             </div>
             <div>
               <p class="mb-2 text-neutral-40 fw-medium">
                 手機號碼
               </p>
-              <span class="text-neutral-0 fw-bold">+886 912 345 678</span>
+              <span class="text-neutral-0 fw-bold">{{ data?.userInfo.phone }}</span>
             </div>
             <div>
               <p class="mb-2 text-neutral-40 fw-medium">
                 電子信箱
               </p>
-              <span class="text-neutral-0 fw-bold">jessica@sample.com</span>
+              <span class="text-neutral-0 fw-bold">{{ data?.userInfo.email }}</span>
             </div>
           </div>
         </div>
@@ -95,7 +124,7 @@ const { bookingId } = route.params;
 
             <NuxtImg
               class="img-fluid rounded-3"
-              src="/images/room-a-1.png"
+              :src="data?.roomId.imageUrl"
               alt="room-a"
               format="png"
             />
@@ -103,30 +132,32 @@ const { bookingId } = route.params;
             <section class="d-flex flex-column gap-6">
               <h3 class="d-flex align-items-center mb-6 text-neutral-80 fs-8 fs-md-6 fw-bold">
                 <p class="mb-0">
-                  尊爵雙人房，1 晚
+                  尊爵雙人房，{{ differenceInDays(parseISO(data!.checkOutDate), parseISO(data!.checkInDate)) }} 晚
                 </p>
                 <span
                   class="d-inline-block mx-4 bg-neutral-80"
                   style="width: 1px;height: 18px;"
                 />
                 <p class="mb-0">
-                  住宿人數：2 位
+                  住宿人數：{{ data?.peopleNum }} 位
                 </p>
               </h3>
 
               <div class="text-neutral-80 fs-8 fs-md-7 fw-bold">
                 <p class="title-deco mb-2">
-                  入住：6 月 10 日星期二，15:00 可入住
+                  入住：{{ format(parseISO(data!.checkInDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，15:00 可入住
                 </p>
                 <p
                   class="title-deco mb-0"
                 >
-                  退房：6 月 11 日星期三，12:00 前退房
+                  退房：{{ format(parseISO(data!.checkOutDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，12:00 前退房
                 </p>
               </div>
 
               <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
-                NT$ 10,000
+                <ClientOnly>
+                  NT$ {{ $formatNumber(data?.roomId.price ?? 0) }}
+                </ClientOnly>
               </p>
             </section>
 
@@ -137,84 +168,12 @@ const { bookingId } = route.params;
                 房內設備
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 fs-8 fs-md-7 bg-neutral-0 border border-neutral-40 rounded-3 list-unstyled">
-                <li class="flex-item d-flex gap-2">
+                <li v-for="facility of data?.roomId.facilityInfo ?? []" class="flex-item d-flex gap-2">
                   <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
-                    電視
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    吹風機
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    冰箱
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    熱水壺
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    檯燈
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    衣櫃
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    除濕機
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    浴缸
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    書桌
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    音響
+                    {{ facility.title }}
                   </p>
                 </li>
               </ul>
@@ -225,84 +184,12 @@ const { bookingId } = route.params;
                 備品提供
               </h3>
               <ul class="d-flex flex-wrap row-gap-2 column-gap-10 p-6 mb-0 fs-8 fs-md-7 bg-neutral-0 border border-neutral-40 rounded-3 list-unstyled">
-                <li class="flex-item d-flex gap-2">
+                <li v-for="amenity of data?.roomId.amenityInfo ?? []" class="flex-item d-flex gap-2">
                   <MaterialSymbolsCheckRounded
                     class="fs-5 text-primary-100"
                   />
                   <p class="mb-0 text-neutral-80 fw-bold">
-                    衛生紙
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    沐浴用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    拖鞋
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    刮鬍刀
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    清潔用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    吊衣架
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    浴巾
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    刷牙用品
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    罐裝水
-                  </p>
-                </li>
-                <li class="flex-item d-flex gap-2">
-                  <MaterialSymbolsCheckRounded
-                    class="fs-5 text-primary-100"
-                  />
-                  <p class="mb-0 text-neutral-80 fw-bold">
-                    梳子
+                    {{ amenity.title }}
                   </p>
                 </li>
               </ul>
