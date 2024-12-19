@@ -136,11 +136,13 @@ export const orderMachine = setup({
                 checkOutDate: format(checkOutDate as number, 'yyyy/MM/dd') }
             },
             onDone: {
+              target: 'success',
               actions: [
                 emit(({ event }) => ({ type: 'onSuccess', data: event.output }))
               ]
             },
             onError: {
+              target: 'failure',
               actions: [
                 emit(({ event }) => ({ type: 'onError', error: event.error }))
               ]

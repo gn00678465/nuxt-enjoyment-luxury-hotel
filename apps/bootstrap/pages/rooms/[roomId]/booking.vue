@@ -45,6 +45,7 @@ const { snapshot, send, actorRef } = useMachine(orderMachine, {
 })
 
 actorRef.on('onSuccess', (event) => {
+  console.log("🚀 ~ actorRef.on ~ event:", event)
   const { _id } = event.data.result
   router.push({
     name: 'booking-confirmation',

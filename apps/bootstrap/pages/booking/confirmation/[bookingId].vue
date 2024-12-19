@@ -132,7 +132,7 @@ function onGoToMyOrder() {
             <section class="d-flex flex-column gap-6">
               <h3 class="d-flex align-items-center mb-6 text-neutral-80 fs-8 fs-md-6 fw-bold">
                 <p class="mb-0">
-                  尊爵雙人房，{{ differenceInDays(parseISO(data!.checkOutDate), parseISO(data!.checkInDate)) }} 晚
+                  {{ data?.roomId.name }}，{{ data && differenceInDays(parseISO(data.checkOutDate), parseISO(data.checkInDate)) || 0 }} 晚
                 </p>
                 <span
                   class="d-inline-block mx-4 bg-neutral-80"
@@ -145,12 +145,12 @@ function onGoToMyOrder() {
 
               <div class="text-neutral-80 fs-8 fs-md-7 fw-bold">
                 <p class="title-deco mb-2">
-                  入住：{{ format(parseISO(data!.checkInDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，15:00 可入住
+                  入住：{{ data && format(parseISO(data.checkInDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，15:00 可入住
                 </p>
                 <p
                   class="title-deco mb-0"
                 >
-                  退房：{{ format(parseISO(data!.checkOutDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，12:00 前退房
+                  退房：{{ data && format(parseISO(data.checkOutDate), 'MM月 dd日EEEE', { locale: zhTW }) }}，12:00 前退房
                 </p>
               </div>
 
